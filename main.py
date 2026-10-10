@@ -40,7 +40,6 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             cliente TEXT, telefono TEXT, marco_id INTEGER, 
-            cristal_izq_id INTEGER, cristal_der_id INTEGER,
             precio_total REAL, monto_sena REAL, saldo REAL, estado TEXT
         )
     ''')
@@ -66,8 +65,6 @@ class ItemVenta(BaseModel):
     cliente: str
     telefono: str | None = None
     marco_id: int | None = None
-    cristal_izq_id: int | None = None
-    cristal_der_id: int | None = None
     precio_total: float
     monto_sena: float
     estado: str
@@ -77,7 +74,7 @@ def obtener_productos():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("SELECT id, marca, modelo, color, stock FROM marcos")
-    marcos = [{"id": r[0], "marca": r[1], "modelo": r[2], "color": r[3], "stock": r[4]} for r in cursor.fetchall()]
+    marcos = [{"id": r, "marca": r, "modelo": r, "color": r, "stock": r} for r in cursor.fetchall()]
     conn.close()
     return {"marcos": marcos, "cristales": []}
 
@@ -101,5 +98,7 @@ def registrar_venta(venta: ItemVenta):
 
 @app.get("/", response_class=HTMLResponse)
 def index():
-    with open("index.html", "r", encoding="utf-8") as f:
-        return f.read()
+    if os.path.exists("index.html"):
+        with open("index.html", "r", encoding="utf-8") as f:
+            return f.read()
+    return "<h1>Error: No se encontró el archivo index.html en el servidor.</h1>"
