@@ -50,7 +50,7 @@
                     <label>2. Selección de Armazón / Anteojo</label>
                     <div class="grid-2">
                         <select id="selectMarco" onchange="actualizarPrecioSugerido()">
-                            <option value="" data-precio="0">-- Elegir Armazón del Stock --</option>
+                            <option value="">-- Elegir Armazón del Stock --</option>
                         </select>
                         <input type="number" id="precio_base_anteojo" required placeholder="Precio de Venta \$">
                     </div>
@@ -86,7 +86,6 @@
             <div class="box box-admin">
                 <h3 style="margin-top:0; color:#c2410c;">🔐 Panel de Carga de Stock (Exclusivo Dueños)</h3>
                 
-                <!-- Caja de Clave Inicial -->
                 <div id="login-admin-box">
                     <label>Ingresá la Clave de Administrador:</label>
                     <div class="grid-2">
@@ -96,7 +95,6 @@
                     <p id="error-clave" style="color:red; font-size:12px; margin-top:5px;" class="hidden">⚠️ Clave incorrecta.</p>
                 </div>
 
-                <!-- Formulario de Carga Manual (Se despliega al validar clave) -->
                 <div id="formulario-carga" class="hidden">
                     <p style="font-size:13px; color:#c2410c; margin-top:0;"><b>¡Ingreso correcto!</b> Cargá los nuevos armazones al salón desde acá:</p>
                     <form id="formCargaManual">
@@ -106,7 +104,7 @@
                             <input type="text" id="input_color" placeholder="Color (Ej: Negro)" required>
                         </div>
                         <div class="grid-2" style="margin-top:10px;">
-                            <input type="number" id="input_stock" placeholder="Cantidad de Unidades (Ej: 5)" required min="1">
+                            <input type="number" id="input_stock" placeholder="Cantidad de Unidades" required min="1">
                             <input type="number" id="input_precio" placeholder="Precio Sugerido Venta \$" required>
                         </div>
                         <button type="button" onclick="subirArmazonManual()" class="btn-admin" style="background:#ea580c;">📥 Insertar en Base de Datos de la Nube</button>
@@ -142,23 +140,25 @@
     <script>
         const API_BASE = window.location.origin;
         const CLAVE_DUEÑO = "Charme2026";
+        let inventarioLocal = [
+            {id: 1, marca: "Ray-Ban", modelo: "Aviator", color: "Negro", stock: 6, precio: 45000},
+            {id: 2, marca: "Vulk", modelo: "Detroit", color: "Carey", stock: 4, precio: 38000},
+            {id: 3, marca: "Infinit", modelo: "Way", color: "Transparente", stock: 5, precio: 29000}
+        ];
 
         function verificarClave() {
             const pass = document.getElementById('clave_admin').value;
+            const error = document.getElementById('error-clave');
             if(pass === CLAVE_DUEÑO) {
+                error.classList.add('hidden');
                 document.getElementById('login-admin-box').classList.add('hidden');
                 document.getElementById('formulario-carga').classList.remove('hidden');
             } else {
-                document.getElementById('error-clave').classList.remove('hidden');
+                error.classList.remove('hidden');
             }
         }
 
-        async function cargarProductos() {
-            try {
-                const r = await fetch(`${API_BASE}/api/productos`);
-                const d = await r.json();
-                
-                const lista = document.getElementById('listaStock');
-                const select = document.getElementById('selectMarco');
-                
-                lista.innerHTML = "";
+        function cargarProductos() {
+            const lista = document.getElementById('listaStock');
+            const select = document.getElementById('selectMarco');
+            lista.innerHTML = "";
