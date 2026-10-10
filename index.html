@@ -105,3 +105,168 @@
                         </div>
                     </div>
                 </div>
+                <!-- 4. Adicionales -->
+                <div class="box box-amber">
+                    <h3>🛍️ 4. Adicionales (Accesorios y Reparaciones)</h3>
+                    <div class="grid-3">
+                        <select id="selectAccesorio">
+                            <option value="Líquido Limpiador Cristales" data-precio="3000">Líquido Limpiador ($3.000)</option>
+                            <option value="Sujetador de Anteojos" data-precio="1500">Sujetador Cordón ($1.500)</option>
+                            <option value="Estuche Rígido" data-precio="4500">Estuche Rígido ($4.500)</option>
+                            <option value="Reparación: Soldadura" data-precio="5000">🛠️ Soldadura ($5.000)</option>
+                            <option value="Reparación: Cambio Bisagra" data-precio="4000">🛠️ Cambio Bisagra ($4.000)</option>
+                            <option value="Reparación: Cambio Plaquetas" data-precio="800">🛠️ Plaquetas ($800)</option>
+                        </select>
+                        <input type="number" id="precio_acc_manual" placeholder="Precio \$">
+                        <button type="button" onclick="agregarAdicional()" class="btn-add">Añadir +</button>
+                    </div>
+                    <div id="listaAccesoriosVenta"></div>
+                </div>
+
+                <!-- 5. Liquidación -->
+                <div class="box box-green">
+                    <h3>💰 5. Liquidación y Cierre</h3>
+                    <div class="grid-3">
+                        <div><label>Total Adicionales (\$)</label><input type="number" id="tot_acc_input" value="0" readonly style="background:#f1f5f9;"></div>
+                        <div><label>Seña Dejada (\$)</label><input type="number" id="monto_sena" value="0" oninput="calcularTotales()"></div>
+                        <div>
+                            <label>Método Pago</label>
+                            <select id="metodo_pago">
+                                <option value="Efectivo">💵 Efectivo</option>
+                                <option value="Transferencia">📱 Transferencia / MP</option>
+                                <option value="Tarjeta">💳 Tarjeta</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-2" style="background:white; padding:12px; border-radius:8px; border:1px solid #a7f3d0; margin-top:12px;">
+                        <div><span style="font-size:11px; font-weight:bold; color:#047857;">TOTAL COMPRA NETO</span><br><b id="lbl_total" style="font-size:20px;">\$ 0.00</b></div>
+                        <div style="text-align:right;"><span style="font-size:11px; font-weight:bold; color:#b45309;">SALDO EN RETIRO</span><br><b id="lbl_saldo" style="font-size:20px; color:#b45309;">\$ 0.00</b></div>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <label>Estado Inicial</label>
+                        <select id="estado_trabajo">
+                            <option value="Pendiente">⏳ Pendiente (Taller)</option>
+                            <option value="Entregado">✅ Entregado Completo</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit">🚀 Finalizar Venta e Imprimir Comprobante</button>
+            </form>
+
+            <!-- 6. PANEL DE CARGA LIBRE SIN CLAVE -->
+            <div class="box box-amber" style="margin-top:30px; background:#fffbeb;">
+                <h3 style="color:#b45309;">📥 Panel de Ingreso de Armazones nuevos al Salón</h3>
+                <form id="formCargaManual">
+                    <div class="grid-3">
+                        <input type="text" id="input_marca" placeholder="Marca (Ej: Vulk)" required>
+                        <input type="text" id="input_modelo" placeholder="Modelo (Ej: Detroit)" required>
+                        <input type="text" id="input_color" placeholder="Color (Ej: Carey)" required>
+                    </div>
+                    <div class="grid-2" style="margin-top:10px;">
+                        <input type="number" id="input_stock" placeholder="Cantidad de Unidades" required min="1">
+                        <input type="number" id="input_precio" placeholder="Precio de Lista Sugerido \$" required>
+                    </div>
+                    <button type="button" onclick="subirArmazonManual()" style="background:#d97706; margin-top:12px;">📥 Agregar Armazón al Stock del Salón</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- MONITOR DE EXISTENCIAS -->
+        <div class="aside-panel">
+            <h2>📦 Stock en Salón</h2>
+            <div id="listaStock" style="margin-top: 15px;">Cargando...</div>
+        </div>
+    </div>
+
+    <!-- TICKET IMPRESIÓN -->
+    <div id="ticket-impresion">
+        <h2 style="text-align:center; margin-bottom:5px;">CHARME LUNETTES</h2>
+        <p style="text-align:center; margin-top:0; font-size:11px;">Orden de Trabajo y Comprobante</p>
+        <p>----------------------------------------</p>
+        <p><strong>Fecha:</strong> <span id="t_fecha"></span></p>
+        <p><strong>Cliente:</strong> <span id="t_cliente"></span></p>
+        <p><strong>Teléfono:</strong> <span id="t_telefono"></span></p>
+        <p>----------------------------------------</p>
+        <p><strong>Tipo de Cristal:</strong> <span id="t_tipo_c"></span></p>
+        <p style="font-weight:bold; margin-bottom:2px;">MEDIDAS RECTETA:</p>
+        <p>OD: Esf: <span id="t_od_esf"></span> | Cil: <span id="t_od_cil"></span> | Eje: <span id="t_od_eje"></span>° | D.I: <span id="t_od_di"></span>mm | Alt: <span id="t_od_alt"></span>mm</p>
+        <p>Trat. OD: <span id="t_od_t"></span></p>
+        <p>OI: Esf: <span id="t_oi_esf"></span> | Cil: <span id="t_oi_cil"></span> | Eje: <span id="t_oi_eje"></span>° | D.I: <span id="t_oi_di"></span>mm | Alt: <span id="t_oi_alt"></span>mm</p>
+        <p>Trat. OI: <span id="t_oi_t"></span></p>
+        <p>----------------------------------------</p>
+        <p><strong>Armazón:</strong> <span id="t_marco_txt"></span></p>
+        <p><strong>Adicionales:</strong> <span id="t_acc_txt"></span></p>
+        <p>----------------------------------------</p>
+        <p><strong>TOTAL NETO VENTA:</strong> \$<span id="t_total"></span></p>
+        <p><strong>SEÑA ENTRADA:</strong> \$<span id="t_sena"></span> (<span id="t_metodo"></span>)</p>
+        <p style="font-size:15px;"><strong>SALDO EN RETIRO: \$<span id="t_saldo"></span></strong></p>
+        <p>----------------------------------------</p>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let adicionalesVenta =;
+        let inventarioLocal = [
+            {id: 1, marca: "Ray-Ban", modelo: "Aviator", color: "Negro", stock: 6, precio: 45000},
+            {id: 2, marca: "Vulk", modelo: "Detroit", color: "Carey", stock: 4, precio: 38000},
+            {id: 3, marca: "Infinit", modelo: "Way", color: "Transparente", stock: 5, precio: 29000}
+        ];
+
+        function cargarProductos() {
+            const lista = document.getElementById('listaStock');
+            const select = document.getElementById('selectMarco');
+            lista.innerHTML = "";
+            select.innerHTML = '<option value="" data-precio="0">-- Sin Armazón Nuevo --</option>';
+            inventarioLocal.forEach(m => {
+                const texto = m.marca + " " + m.modelo + " (" + m.color + ")";
+                lista.innerHTML += `<div class="stock-item"><span>👓 ${texto}</span> <b>${m.stock} u.</b></div>`;
+                if(m.stock > 0) {
+                    select.innerHTML += `<option value="${m.id}" data-precio="${m.precio}" data-txt="${texto}">${texto} (\$${m.precio})</option>`;
+                }
+            });
+        }
+
+        function actualizarPrecioMarco() {
+            const select = document.getElementById('selectMarco');
+            const precioInput = document.getElementById('p_marco');
+            precioInput.value = select.options[select.selectedIndex].getAttribute('data-precio') || 0;
+            calcularTotales();
+        }
+
+        function agregarAdicional() {
+            const select = document.getElementById('selectAccesorio');
+            const precioInput = document.getElementById('precio_acc_manual');
+            const nombre = select.value;
+            const precio = parseFloat(precioInput.value) || parseFloat(select.options[select.selectedIndex].getAttribute('data-precio')) || 0;
+            
+            adicionalesVenta.push({ nombre, precio });
+            actualizarListaAdicionales();
+            precioInput.value = "";
+        }
+
+        function actualizarListaAdicionales() {
+            const container = document.getElementById('listaAccesoriosVenta');
+            container.innerHTML = "";
+            let totalAcc = 0;
+            adicionalesVenta.forEach((item, index) => {
+                totalAcc += item.precision || item.precio;
+                container.innerHTML += `<div class="item-row"><span>📦 ${item.nombre}</span> <b>\$${item.precio}</b></div>`;
+            });
+            document.getElementById('tot_acc_input').value = totalAcc;
+            calcularTotales();
+        }
+
+        function calcularTotales() {
+            const m = parseFloat(document.getElementById('p_marco').value) || 0;
+            const c = parseFloat(document.getElementById('p_cristal').value) || 0;
+            const a = parseFloat(document.getElementById('tot_acc_input').value) || 0;
+            const sena = parseFloat(document.getElementById('monto_sena').value) || 0;
+
+            const total = m + c + a;
+            const saldo = total - sena;
+
+            document.getElementById('lbl_total').innerText = `\$ ${total.toFixed(2)}`;
+            document.getElementById('lbl_saldo').innerText = `\$ ${saldo.toFixed(2)}`;
+        }
+
+        document.getElementById('p_marco').addEventListener('input', calcularTotales);
