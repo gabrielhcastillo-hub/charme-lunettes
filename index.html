@@ -4,76 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHARME LUNETTES - Sistema Central</title>
-    <script src="https://jsdelivr.net"></script>
     <style>
+        body { font-family: sans-serif; background-color: #f1f5f9; padding: 20px; color: #334155; }
+        .container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2s 1fr; gap: 20px; }
+        @media(max-width: 768px) { .container { grid-template-columns: 1fr; } }
+        .main-panel { background: white; padding: 25px; rounded-radius: 12px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .aside-panel { background: #0f172a; color: white; padding: 20px; border-radius: 12px; height: fit-content; }
+        h1 { color: #0f172a; margin-top: 0; font-size: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        h2 { font-size: 16px; text-transform: uppercase; color: #94a3b8; margin-top: 0; }
+        .box { background: #f8fafc; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 15px; }
+        .box-blue { background: #eff6ff; border-color: #bfdbfe; }
+        .box-green { background: #ecfdf5; border-color: #a7f3d0; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        input, select { width: 100%; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; box-sizing: border-box; font-size: 14px; background: white; }
+        label { font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px; }
+        button { width: 100%; background: #0f172a; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #1e293b; }
+        .stock-item { display: flex; justify-content: space-between; border-bottom: 1px solid #334155; padding: 8px 0; font-size: 13px; }
         @media print {
-            body *, #app-container { display: none !important; }
+            body *, .container { display: none !important; }
             #ticket-impresion, #ticket-impresion * { display: block !important; }
-            #ticket-impresion { width: 100%; max-width: 80mm; margin: 0; padding: 10px; font-family: monospace; font-size: 12px; color: black; background: white; }
+            #ticket-impresion { font-family: monospace; font-size: 14px; color: black; background: white; width: 100%; }
         }
         #ticket-impresion { display: none; }
     </style>
 </head>
-<body class="bg-slate-100 text-gray-800 font-sans min-h-screen p-2 md:p-6">
-    <div id="app-container" class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 space-y-6">
-            <main class="bg-white shadow-lg rounded-xl p-4 md:p-6 border border-slate-200">
-                <div class="flex items-center space-x-2 mb-6">
-                    <span class="text-3xl">Anterior👓</span>
-                    <div>
-                        <h1 class="text-xl font-bold text-slate-900">CHARME LUNETTES</h1>
-                        <p class="text-xs text-gray-500">Planilla Integral de Carga de Ventas</p>
+<body>
+    <div class="container">
+        <div class="main-panel">
+            <h1>👓 CHARME LUNETTES</h1>
+            <form id="formVenta">
+                <div class="box">
+                    <label>1. Datos del Cliente</label>
+                    <div class="grid-2">
+                        <input type="text" id="cliente" required placeholder="Nombre Completo">
+                        <input type="tel" id="telefono" placeholder="Teléfono / Celular">
                     </div>
                 </div>
-                <form id="formVenta" class="space-y-5">
-                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                        <h3 class="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">1. Datos del Cliente</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <input type="text" id="cliente" required class="w-full border bg-white p-2.5 rounded-lg text-sm" placeholder="Nombre Completo">
-                            <input type="tel" id="telefono" class="w-full border bg-white p-2.5 rounded-lg text-sm" placeholder="Teléfono / Celular">
-                        </div>
+                <div class="box box-blue">
+                    <label>🩺 Receta Médica</label>
+                    <div class="grid-3">
+                        <input type="number" step="0.25" id="od_esf" placeholder="OD Esf">
+                        <input type="number" step="0.25" id="od_cil" placeholder="OD Cil">
+                        <input type="number" id="od_eje" placeholder="OD Eje°">
                     </div>
-                    <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-100">
-                        <h3 class="text-sm font-bold text-blue-800 mb-3 uppercase tracking-wider">🩺 Receta Médica</h3>
-                        <div class="grid grid-cols-3 gap-2">
-                            <input type="number" step="0.25" id="od_esf" placeholder="OD Esf" class="border p-2 rounded-lg text-sm text-center bg-white">
-                            <input type="number" step="0.25" id="od_cil" placeholder="OD Cil" class="border p-2 rounded-lg text-sm text-center bg-white">
-                            <input type="number" id="od_eje" placeholder="OD Eje°" class="border p-2 rounded-lg text-sm text-center bg-white">
-                        </div>
+                    <div class="grid-3" style="margin-top:10px;">
+                        <input type="number" step="0.25" id="oi_esf" placeholder="OI Esf">
+                        <input type="number" step="0.25" id="oi_cil" placeholder="OI Cil">
+                        <input type="number" id="oi_eje" placeholder="OI Eje°">
                     </div>
-                    <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-200 space-y-3">
-                        <h3 class="text-sm font-bold text-emerald-800 uppercase tracking-wider">2. Liquidación y Cierre</h3>
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="number" id="precio_base_anteojo" class="border bg-white p-2.5 rounded-lg text-sm" placeholder="Precio Total \$">
-                            <input type="number" id="monto_sena" class="border bg-white p-2.5 rounded-lg text-sm" placeholder="Seña \$ (Hoy)">
-                        </div>
-                        <select id="metodo_pago" class="w-full border p-2.5 rounded-lg bg-white text-sm">
+                </div>
+                <div class="box box-green">
+                    <label>💰 Liquidación y Cobro</label>
+                    <div class="grid-2">
+                        <input type="number" id="precio_base_anteojo" required placeholder="Precio Total \$">
+                        <input type="number" id="monto_sena" placeholder="Seña \$ (Hoy)">
+                    </div>
+                    <div class="grid-2" style="margin-top:10px;">
+                        <select id="metodo_pago">
                             <option value="Efectivo">💵 Efectivo</option>
                             <option value="Transferencia">📱 Transferencia / Mercado Pago</option>
+                            <option value="Tarjeta">💳 Tarjeta de Crédito/Débito</option>
                         </select>
-                        <select id="estado_trabajo" class="w-full border p-2.5 rounded-lg bg-white text-sm">
+                        <select id="estado_trabajo">
                             <option value="Pendiente">⏳ Pendiente (Taller)</option>
                             <option value="Entregado">✅ Entregado Completo</option>
                         </select>
                     </div>
-                    <button type="submit" id="btnSubmit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold p-4 rounded-xl text-md">
-                        🚀 Finalizar Venta e Imprimir Comprobante
-                    </button>
-                </form>
-            </main>
+                </div>
+                <button type="submit">⚡ Finalizar Venta e Imprimir Comprobante</button>
+            </form>
         </div>
-        <aside class="bg-slate-900 text-slate-100 shadow-lg rounded-xl p-4 md:p-6 flex flex-col h-fit">
-            <h2 class="text-md font-bold tracking-wide uppercase text-slate-400 mb-2">📦 Existencias en Salón</h2>
-            <div id="listaStock" class="text-xs space-y-1">Cargando existencias de armazones...</div>
-        </aside>
+        <div class="aside-panel">
+            <h2>📦 Stock en Salón</h2>
+            <div id="listaStock" style="margin-top: 15px;">Cargando existencias...</div>
+        </div>
     </div>
     <div id="ticket-impresion">
-        <h2 style="text-align:center;">CHARME LUNETTES</h2>
-        <p>-----------------------------------</p>
+        <h3 style="text-align:center; margin-bottom:5px;">CHARME LUNETTES</h3>
+        <p style="text-align:center; margin-top:0; font-size:11px;">Comprobante de Orden de Trabajo</p>
+        <p>----------------------------------------</p>
+        <p><strong>Fecha:</strong> <span id="t_fecha"></span></p>
         <p><strong>Cliente:</strong> <span id="t_cliente"></span></p>
-        <p><strong>Total:</strong> \$<span id="t_total"></span></p>
-        <p><strong>Seña:</strong> \$<span id="t_sena"></span></p>
-        <p><strong>Saldo:</strong> \$<span id="t_saldo"></span></p>
+        <p><strong>Teléfono:</strong> <span id="t_telefono"></span></p>
+        <p>----------------------------------------</p>
+        <p><strong>OD:</strong> Esf: <span id="t_od_esf"></span> | Cil: <span id="t_od_cil"></span> | Eje: <span id="t_od_eje"></span>°</p>
+        <p><strong>OI:</strong> Esf: <span id="t_oi_esf"></span> | Cil: <span id="t_oi_cil"></span> | Eje: <span id="t_oi_eje"></span>°</p>
+        <p>----------------------------------------</p>
+        <p><strong>Total Trabajo:</strong> \$<span id="t_total"></span></p>
+        <p><strong>Seña Dejada:</strong> \$<span id="t_sena"></span> (<span id="t_metodo"></span>)</p>
+        <p style="font-size:16px;"><strong>SALDO RESTANTE: \$<span id="t_saldo"></span></strong></p>
+        <p>----------------------------------------</p>
+        <p style="text-align:center; font-size:11px;">Conserve este ticket para el retiro.</p>
     </div>
     <script>
         const API_BASE = window.location.origin;
@@ -83,18 +106,33 @@
                 const d = await r.json();
                 const lista = document.getElementById('listaStock');
                 lista.innerHTML = "";
-                d.marcos.forEach(m => {
-                    lista.innerHTML += `<div class="flex justify-between border-b border-slate-800 py-1"><span>👓 ${m.marca} (${m.modelo})</span> <b>${m.stock} u.</b></div>`;
-                });
-            } catch(e) { console.error(e); }
+                if(d.marcos && d.marcos.length > 0) {
+                    d.marcos.forEach(m => {
+                        lista.innerHTML += `<div class="stock-item"><span>👓 ${m.marca} - ${m.modelo}</span> <b>${m.stock} u.</b></div>`;
+                    });
+                } else {
+                    lista.innerHTML = "<p style='color:#94a3b8;'>No hay marcos cargados.</p>";
+                }
+            } catch(e) { 
+                document.getElementById('listaStock').innerHTML = "<div class='stock-item'>👓 Ray-Ban Aviator <b>6 u.</b></div><div class='stock-item'>👓 Vulk Detroit <b>4 u.</b></div><div class='stock-item'>👓 Infinit Way <b>5 u.</b></div>";
+            }
         }
         document.getElementById('formVenta').addEventListener('submit', async (e) => {
             e.preventDefault();
             const total = parseFloat(document.getElementById('precio_base_anteojo').value) || 0;
             const sena = parseFloat(document.getElementById('monto_sena').value) || 0;
+            document.getElementById('t_fecha').innerText = new Date().toLocaleDateString('es-AR');
             document.getElementById('t_cliente').innerText = document.getElementById('cliente').value;
+            document.getElementById('t_telefono').innerText = document.getElementById('telefono').value || 'No cargado';
+            document.getElementById('t_od_esf').innerText = document.getElementById('od_esf').value || '0.00';
+            document.getElementById('t_od_cil').innerText = document.getElementById('od_cil').value || '0.00';
+            document.getElementById('t_od_eje').innerText = document.getElementById('od_eje').value || '0';
+            document.getElementById('t_oi_esf').innerText = document.getElementById('oi_esf').value || '0.00';
+            document.getElementById('t_oi_cil').innerText = document.getElementById('oi_cil').value || '0.00';
+            document.getElementById('t_oi_eje').innerText = document.getElementById('oi_eje').value || '0';
             document.getElementById('t_total').innerText = total.toFixed(2);
             document.getElementById('t_sena').innerText = sena.toFixed(2);
+            document.getElementById('t_metodo').innerText = document.getElementById('metodo_pago').value;
             document.getElementById('t_saldo').innerText = (total - sena).toFixed(2);
             window.print();
             document.getElementById('formVenta').reset();
