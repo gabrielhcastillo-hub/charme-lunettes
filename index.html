@@ -1,131 +1,63 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHARME LUNETTES - Sistema Central</title>
-    <script src="https://jsdelivr.net"></script>
-    <style>
-        @media print {
-            body *, #app-container { display: none !important; }
-            #ticket-impresion, #ticket-impresion * { display: block !important; }
-            #ticket-impresion { width: 100%; max-width: 80mm; margin: 0; padding: 10px; font-family: monospace; font-size: 12px; color: black; background: white; }
+                    <div class="bg-emerald-50 p-4 rounded-lg border border-emerald-200 space-y-3">
+                        <h3 class="text-sm font-bold text-emerald-800 uppercase tracking-wider">2. Liquidación y Cierre</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="number" id="precio_base_anteojo" class="border bg-white p-2.5 rounded-lg text-sm" placeholder="Precio Total \$">
+                            <input type="number" id="monto_sena" class="border bg-white p-2.5 rounded-lg text-sm" placeholder="Seña \$ (Hoy)">
+                        </div>
+                        <select id="metodo_pago" class="w-full border p-2.5 rounded-lg bg-white text-sm">
+                            <option value="Efectivo">💵 Efectivo</option>
+                            <option value="Transferencia">📱 Transferencia / Mercado Pago</option>
+                        </select>
+                        <select id="estado_trabajo" class="w-full border p-2.5 rounded-lg bg-white text-sm">
+                            <option value="Pendiente">⏳ Pendiente (Taller)</option>
+                            <option value="Entregado">✅ Entregado Completo</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="btnSubmit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold p-4 rounded-xl text-md">
+                        🚀 Finalizar Venta e Imprimir Comprobante
+                    </button>
+                </form>
+            </main>
+        </div>
+        <aside class="bg-slate-900 text-slate-100 shadow-lg rounded-xl p-4 md:p-6 flex flex-col h-fit">
+            <h2 class="text-md font-bold tracking-wide uppercase text-slate-400 mb-2">📦 Existencias en Salón</h2>
+            <div id="listaStock" class="text-xs space-y-1">Cargando existencias de armazones...</div>
+        </aside>
+    </div>
+    <div id="ticket-impresion">
+        <h2 style="text-align:center;">CHARME LUNETTES</h2>
+        <p>-----------------------------------</p>
+        <p><strong>Cliente:</strong> <span id="t_cliente"></span></p>
+        <p><strong>Total:</strong> \$<span id="t_total"></span></p>
+        <p><strong>Seña:</strong> \$<span id="t_sena"></span></p>
+        <p><strong>Saldo:</strong> \$<span id="t_saldo"></span></p>
+    </div>
+    <script>
+        const API_BASE = window.location.origin;
+        async function cargarProductos() {
+            try {
+                const r = await fetch(`${API_BASE}/api/productos`);
+                const d = await r.json();
+                const lista = document.getElementById('listaStock');
+                lista.innerHTML = "";
+                d.marcos.forEach(m => {
+                    lista.innerHTML += `<div class="flex justify-between border-b border-slate-800 py-1"><span>👓 ${m.marca} (${m.modelo})</span> <b>${m.stock} u.</b></div>`;
+                });
+            } catch(e) { console.error(e); }
         }
-        #ticket-impresion { display: none; }
-    </style>
-</head>
-<body class="bg-slate-100 text-gray-800 font-sans min-h-screen p-2 md:p-6">
-
-    <div id="app-container" class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- COLUMNA PRINCIPAL -->
-        <div class="lg:col-span-2 space-y-6">
-            
-            <main class="bg-white shadow-lg rounded-xl p-4 md:p-6 border border-slate-200">
-                <div class="flex items-center space-x-2 mb-6">
-                    <span class="text-3xl">👓</span>
-                    <div>
-                        <h1 class="text-xl font-bold text-slate-900">CHARME LUNETTES</h1>
-                        <p class="text-xs text-gray-500">Planilla Integral: Cristales, Accesorios y Reparaciones</p>
-                    </div>
-                </div>
-                
-                <form id="formVenta" class="space-y-5">
-                    <!-- 1. Datos del Cliente -->
-                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
-                        <h3 class="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">1. Datos del Cliente</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Nombre Completo</label>
-                                <input type="text" id="cliente" required class="w-full border bg-white p-2.5 rounded-lg text-sm focus:outline-blue-500" placeholder="Ej. Juan Pérez">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Teléfono / Celular</label>
-                                <input type="tel" id="telefono" class="w-full border bg-white p-2.5 rounded-lg text-sm focus:outline-blue-500" placeholder="Ej. 11 2345-6789">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 2. Receta Médica -->
-                    <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-100">
-                        <h3 class="text-sm font-bold text-blue-800 mb-3 uppercase tracking-wider">🩺 Receta Médica</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <span class="text-xs font-bold text-blue-900 block mb-1">OJO DERECHO (OD)</span>
-                                <div class="grid grid-cols-3 gap-2">
-                                    <input type="number" step="0.25" id="od_esf" placeholder="Esf" class="border bg-white p-2 rounded-lg text-sm text-center">
-                                    <input type="number" step="0.25" id="od_cil" placeholder="Cil" class="border bg-white p-2 rounded-lg text-sm text-center">
-                                    <input type="number" min="0" max="180" id="od_eje" placeholder="Eje°" class="border bg-white p-2 rounded-lg text-sm text-center">
-                                </div>
-                            </div>
-                            <div>
-                                <span class="text-xs font-bold text-blue-900 block mb-1">OJO IZQUIERDO (OI)</span>
-                                <div class="grid grid-cols-3 gap-2">
-                                    <input type="number" step="0.25" id="oi_esf" placeholder="Esf" class="border bg-white p-2 rounded-lg text-sm text-center">
-                                    <input type="number" step="0.25" id="oi_cil" placeholder="Cil" class="border bg-white p-2 rounded-lg text-sm text-center">
-                                    <input type="number" min="0" max="180" id="oi_eje" placeholder="Eje°" class="border bg-white p-2 rounded-lg text-sm text-center">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 3. Selección Productos con Precios Editables -->
-                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
-                        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider">2. Cristales y Armazones</h3>
-                        
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-                            <div class="sm:col-span-2">
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Elegir Armazón / Anteojo de Sol</label>
-                                <select id="selectMarco" onchange="actualizarPrecioMarco()" class="w-full border p-2.5 rounded-lg bg-white text-sm focus:outline-blue-500">
-                                    <option value="" data-precio="0">-- Sin Armazón Nuevo --</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-slate-700 mb-1">Precio Armazón ($)</label>
-                                <input type="number" id="precio_marco_individual" min="0" value="0" class="w-full border bg-white p-2.5 rounded-lg text-sm font-bold text-blue-900 focus:outline-blue-500">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end pt-2">
-                            <div class="sm:col-span-2">
-                                <label class="block text-xs font-medium text-gray-600 mb-1">Cristales</label>
-                                <select id="selectCristal" onchange="actualizarPrecioCristal()" class="w-full border p-2.5 rounded-lg bg-white text-sm focus:outline-blue-500">
-                                    <option value="" data-precio="0">-- Sin Cristales Nuevos --</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-slate-700 mb-1">Precio Cristales ($)</label>
-                                <input type="number" id="precio_cristal_individual" min="0" value="0" class="w-full border bg-white p-2.5 rounded-lg text-sm font-bold text-teal-900 focus:outline-blue-500">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4. Adicionales -->
-                    <div class="bg-amber-50/70 p-4 rounded-lg border border-amber-200 space-y-3">
-                        <h3 class="text-sm font-bold text-amber-800 uppercase tracking-wider">3. Adicionales (Accesorios y Reparaciones)</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                            <div class="sm:col-span-1">
-                                <label class="block text-xs font-medium text-amber-900 mb-1">Concepto / Servicio</label>
-                                <select id="selectAccesorio" onchange="verificarConceptoSeleccionado()" class="w-full border p-2 rounded-lg bg-white text-sm focus:outline-amber-500">
-                                    <option value="" data-precio="0">-- Seleccionar --</option>
-                                    <option value="Sujetador de Anteojos" data-precio="1500">Sujetador Cordón ($1.500)</option>
-                                    <option value="Líquido Limpiador Cristales" data-precio="3000">Líquido Limpiador 60ml ($3.000)</option>
-                                    <option value="Lente de Contacto Descartable" data-precio="12000">Lente Contacto Par ($12.000)</option>
-                                    <option value="Estuche Rígido" data-precio="4500">Estuche Rígido ($4.500)</option>
-                                    <option value="Reparación: Cambio de Patilla/s" data-precio="3500">🛠️ Reparación: Patillas ($3.500)</option>
-                                    <option value="Reparación: Soldadura de Armazón" data-precio="5000">🛠️ Reparación: Soldadura ($5.000)</option>
-                                    <option value="Reparación: Cambio de Bisagra" data-precio="4000">🛠️ Reparación: Bisagras ($4.000)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-amber-900 mb-1">Precio Modificable ($)</label>
-                                <input type="number" id="precioAccesorio" min="0" value="0" class="w-full border bg-white p-2 rounded-lg text-sm text-center focus:outline-amber-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-amber-900 mb-1">Cantidad</label>
-                                <div class="flex space-x-1">
-                                    <input type="number" id="cantAccesorio" min="1" value="1" class="w-full border bg-white p-2 rounded-lg text-sm text-center focus:outline-amber-500">
-                                    <button type="button" onclick="agregarAdicionalALista()" class="bg-amber-600 hover:bg-amber-700 text-white font-extrabold px-4 rounded-lg text-sm cursor-pointer">+</button>
-                                </div>
-                            </div>
-                        </div>
+        document.getElementById('formVenta').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const total = parseFloat(document.getElementById('precio_base_anteojo').value) || 0;
+            const sena = parseFloat(document.getElementById('monto_sena').value) || 0;
+            document.getElementById('t_cliente').innerText = document.getElementById('cliente').value;
+            document.getElementById('t_total').innerText = total.toFixed(2);
+            document.getElementById('t_sena').innerText = sena.toFixed(2);
+            document.getElementById('t_saldo').innerText = (total - sena).toFixed(2);
+            window.print();
+            document.getElementById('formVenta').reset();
+            cargarProductos();
+        });
+        window.onload = cargarProductos;
+    </script>
+</body>
+</html>
