@@ -1,105 +1,131 @@
-import sqlite3
-from fastapi import FastAPI, HTTPException, UploadFile, File
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
-import os
-import json
-from io import BytesIO
-from PIL import Image
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHARME LUNETTES - Sistema Central</title>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        @media print {
+            body *, #app-container { display: none !important; }
+            #ticket-impresion, #ticket-impresion * { display: block !important; }
+            #ticket-impresion { width: 100%; max-width: 80mm; margin: 0; padding: 10px; font-family: monospace; font-size: 12px; color: black; background: white; }
+        }
+        #ticket-impresion { display: none; }
+    </style>
+</head>
+<body class="bg-slate-100 text-gray-800 font-sans min-h-screen p-2 md:p-6">
 
-app = FastAPI(title="Sistema CHARME LUNETTES")
+    <div id="app-container" class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- COLUMNA PRINCIPAL -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <main class="bg-white shadow-lg rounded-xl p-4 md:p-6 border border-slate-200">
+                <div class="flex items-center space-x-2 mb-6">
+                    <span class="text-3xl">👓</span>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900">CHARME LUNETTES</h1>
+                        <p class="text-xs text-gray-500">Planilla Integral: Cristales, Accesorios y Reparaciones</p>
+                    </div>
+                </div>
+                
+                <form id="formVenta" class="space-y-5">
+                    <!-- 1. Datos del Cliente -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <h3 class="text-sm font-bold text-slate-700 mb-3 uppercase tracking-wider">1. Datos del Cliente</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Nombre Completo</label>
+                                <input type="text" id="cliente" required class="w-full border bg-white p-2.5 rounded-lg text-sm focus:outline-blue-500" placeholder="Ej. Juan Pérez">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Teléfono / Celular</label>
+                                <input type="tel" id="telefono" class="w-full border bg-white p-2.5 rounded-lg text-sm focus:outline-blue-500" placeholder="Ej. 11 2345-6789">
+                            </div>
+                        </div>
+                    </div>
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+                    <!-- 2. Receta Médica -->
+                    <div class="bg-blue-50/50 p-4 rounded-lg border border-blue-100">
+                        <h3 class="text-sm font-bold text-blue-800 mb-3 uppercase tracking-wider">🩺 Receta Médica</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <span class="text-xs font-bold text-blue-900 block mb-1">OJO DERECHO (OD)</span>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <input type="number" step="0.25" id="od_esf" placeholder="Esf" class="border bg-white p-2 rounded-lg text-sm text-center">
+                                    <input type="number" step="0.25" id="od_cil" placeholder="Cil" class="border bg-white p-2 rounded-lg text-sm text-center">
+                                    <input type="number" min="0" max="180" id="od_eje" placeholder="Eje°" class="border bg-white p-2 rounded-lg text-sm text-center">
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs font-bold text-blue-900 block mb-1">OJO IZQUIERDO (OI)</span>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <input type="number" step="0.25" id="oi_esf" placeholder="Esf" class="border bg-white p-2 rounded-lg text-sm text-center">
+                                    <input type="number" step="0.25" id="oi_cil" placeholder="Cil" class="border bg-white p-2 rounded-lg text-sm text-center">
+                                    <input type="number" min="0" max="180" id="oi_eje" placeholder="Eje°" class="border bg-white p-2 rounded-lg text-sm text-center">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-DB_PATH = "charme_lunettes.db"
+                    <!-- 3. Selección Productos con Precios Editables -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 space-y-4">
+                        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider">2. Cristales y Armazones</h3>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Elegir Armazón / Anteojo de Sol</label>
+                                <select id="selectMarco" onchange="actualizarPrecioMarco()" class="w-full border p-2.5 rounded-lg bg-white text-sm focus:outline-blue-500">
+                                    <option value="" data-precio="0">-- Sin Armazón Nuevo --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Precio Armazón ($)</label>
+                                <input type="number" id="precio_marco_individual" min="0" value="0" class="w-full border bg-white p-2.5 rounded-lg text-sm font-bold text-blue-900 focus:outline-blue-500">
+                            </div>
+                        </div>
 
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS marcos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            marca TEXT, modelo TEXT, color TEXT, stock INTEGER, precio REAL
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS cristales (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            material TEXT, tratamiento TEXT, esf REAL, cil REAL, stock INTEGER
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS ventas (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            cliente TEXT, telefono TEXT, marco_id INTEGER, 
-            cristal_izq_id INTEGER, cristal_der_id INTEGER,
-            precio_total REAL, monto_sena REAL, saldo REAL, estado TEXT
-        )
-    ''')
-    
-    cursor.execute("SELECT COUNT(*) FROM marcos")
-    if cursor.fetchone() == 0:
-        cursor.executemany("INSERT INTO marcos (marca, modelo, color, stock, precio) VALUES (?,?,?,?,?)", [
-            ("Ray-Ban", "Aviator", "Negro", 6, 45000),
-            ("Vulk", "Detroit", "Carey", 4, 38000),
-            ("Infinit", "Way", "Transparente", 5, 29000)
-        ])
-        cursor.executemany("INSERT INTO cristales (material, tratamiento, esf, cil, stock) VALUES (?,?,?,?,?)", [
-            ("Orgánico", "Antirreflex", 0.00, 0.00, 30),
-            ("Policarbonato", "Filtro Azul", -1.50, -0.25, 12),
-            ("Orgánico", "Fotocromático", +2.00, 0.00, 8)
-        ])
-        conn.commit()
-    conn.close()
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end pt-2">
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Cristales</label>
+                                <select id="selectCristal" onchange="actualizarPrecioCristal()" class="w-full border p-2.5 rounded-lg bg-white text-sm focus:outline-blue-500">
+                                    <option value="" data-precio="0">-- Sin Cristales Nuevos --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-700 mb-1">Precio Cristales ($)</label>
+                                <input type="number" id="precio_cristal_individual" min="0" value="0" class="w-full border bg-white p-2.5 rounded-lg text-sm font-bold text-teal-900 focus:outline-blue-500">
+                            </div>
+                        </div>
+                    </div>
 
-init_db()
-
-class ItemVenta(BaseModel):
-    cliente: str
-    telefono: str | None = None
-    marco_id: int | None = None
-    cristal_izq_id: int | None = None
-    cristal_der_id: int | None = None
-    precio_total: float
-    monto_sena: float
-    estado: str
-
-@app.get("/api/productos")
-def obtener_productos():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, marca, modelo, color, stock FROM marcos")
-    marcos = [{"id": r[0], "marca": r[1], "modelo": r[2], "color": r[3], "stock": r[4]} for r in cursor.fetchall()]
-    conn.close()
-    return {"marcos": marcos, "cristales": []}
-
-@app.post("/api/vender")
-def registrar_venta(venta: ItemVenta):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    saldo_calculado = venta.precio_total - venta.monto_sena
-    try:
-        cursor.execute('''
-            INSERT INTO ventas (cliente, telefono, marco_id, precio_total, monto_sena, saldo, estado)
-            VALUES (?,?,?,?,?,?,?)
-        ''', (venta.cliente, venta.telefono, venta.marco_id, venta.precio_total, venta.monto_sena, saldo_calculado, venta.estado))
-        conn.commit()
-        return {"status": "success"}
-    except Exception as e:
-        conn.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
-    finally:
-        conn.close()
-
-@app.get("/", response_class=HTMLResponse)
-def index():
-    with open("index.html", "r", encoding="utf-8") as f:
-        return f.read()
+                    <!-- 4. Adicionales -->
+                    <div class="bg-amber-50/70 p-4 rounded-lg border border-amber-200 space-y-3">
+                        <h3 class="text-sm font-bold text-amber-800 uppercase tracking-wider">3. Adicionales (Accesorios y Reparaciones)</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div class="sm:col-span-1">
+                                <label class="block text-xs font-medium text-amber-900 mb-1">Concepto / Servicio</label>
+                                <select id="selectAccesorio" onchange="verificarConceptoSeleccionado()" class="w-full border p-2 rounded-lg bg-white text-sm focus:outline-amber-500">
+                                    <option value="" data-precio="0">-- Seleccionar --</option>
+                                    <option value="Sujetador de Anteojos" data-precio="1500">Sujetador Cordón ($1.500)</option>
+                                    <option value="Líquido Limpiador Cristales" data-precio="3000">Líquido Limpiador 60ml ($3.000)</option>
+                                    <option value="Lente de Contacto Descartable" data-precio="12000">Lente Contacto Par ($12.000)</option>
+                                    <option value="Estuche Rígido" data-precio="4500">Estuche Rígido ($4.500)</option>
+                                    <option value="Reparación: Cambio de Patilla/s" data-precio="3500">🛠️ Reparación: Patillas ($3.500)</option>
+                                    <option value="Reparación: Soldadura de Armazón" data-precio="5000">🛠️ Reparación: Soldadura ($5.000)</option>
+                                    <option value="Reparación: Cambio de Bisagra" data-precio="4000">🛠️ Reparación: Bisagras ($4.000)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-amber-900 mb-1">Precio Modificable ($)</label>
+                                <input type="number" id="precioAccesorio" min="0" value="0" class="w-full border bg-white p-2 rounded-lg text-sm text-center focus:outline-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-amber-900 mb-1">Cantidad</label>
+                                <div class="flex space-x-1">
+                                    <input type="number" id="cantAccesorio" min="1" value="1" class="w-full border bg-white p-2 rounded-lg text-sm text-center focus:outline-amber-500">
+                                    <button type="button" onclick="agregarAdicionalALista()" class="bg-amber-600 hover:bg-amber-700 text-white font-extrabold px-4 rounded-lg text-sm cursor-pointer">+</button>
+                                </div>
+                            </div>
+                        </div>
