@@ -6,22 +6,26 @@
     <title>CHARME LUNETTES - Sistema Central</title>
     <style>
         body { font-family: sans-serif; background-color: #f1f5f9; padding: 20px; color: #334155; }
-        .container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 2s 1fr; gap: 20px; }
-        @media(max-width: 768px) { .container { grid-template-columns: 1fr; } }
-        .main-panel { background: white; padding: 25px; rounded-radius: 12px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media(max-width: 900px) { .container { grid-template-columns: 1fr; } }
+        .main-panel { background: white; padding: 25px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .aside-panel { background: #0f172a; color: white; padding: 20px; border-radius: 12px; height: fit-content; }
         h1 { color: #0f172a; margin-top: 0; font-size: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         h2 { font-size: 16px; text-transform: uppercase; color: #94a3b8; margin-top: 0; }
         .box { background: #f8fafc; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 15px; }
         .box-blue { background: #eff6ff; border-color: #bfdbfe; }
         .box-green { background: #ecfdf5; border-color: #a7f3d0; }
+        .box-admin { background: #fff7ed; border-color: #ffedd5; margin-top: 30px; border: 1px solid #ffedd5; padding: 20px; border-radius: 12px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
         input, select { width: 100%; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; box-sizing: border-box; font-size: 14px; background: white; }
         label { font-size: 12px; font-weight: bold; color: #475569; display: block; margin-bottom: 4px; }
         button { width: 100%; background: #0f172a; color: white; border: none; padding: 15px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
         button:hover { background: #1e293b; }
+        .btn-admin { background: #ea580c; padding: 10px; font-size: 14px; }
+        .btn-admin:hover { background: #c2410c; }
         .stock-item { display: flex; justify-content: space-between; border-bottom: 1px solid #334155; padding: 8px 0; font-size: 13px; }
+        .hidden { display: none !important; }
         @media print {
             body *, .container { display: none !important; }
             #ticket-impresion, #ticket-impresion * { display: block !important; }
@@ -43,7 +47,16 @@
                     </div>
                 </div>
                 <div class="box box-blue">
-                    <label>🩺 Receta Médica</label>
+                    <label>2. Selección de Armazón / Anteojo</label>
+                    <div class="grid-2">
+                        <select id="selectMarco" onchange="actualizarPrecioSugerido()">
+                            <option value="" data-precio="0">-- Elegir Armazón del Stock --</option>
+                        </select>
+                        <input type="number" id="precio_base_anteojo" required placeholder="Precio de Venta \$">
+                    </div>
+                </div>
+                <div class="box box-blue">
+                    <label>🩺 3. Receta Médica (Opcional)</label>
                     <div class="grid-3">
                         <input type="number" step="0.25" id="od_esf" placeholder="OD Esf">
                         <input type="number" step="0.25" id="od_cil" placeholder="OD Cil">
@@ -56,89 +69,96 @@
                     </div>
                 </div>
                 <div class="box box-green">
-                    <label>💰 Liquidación y Cobro</label>
+                    <label>💰 4. Liquidación y Cobro</label>
                     <div class="grid-2">
-                        <input type="number" id="precio_base_anteojo" required placeholder="Precio Total \$">
-                        <input type="number" id="monto_sena" placeholder="Seña \$ (Hoy)">
-                    </div>
-                    <div class="grid-2" style="margin-top:10px;">
+                        <input type="number" id="monto_sena" placeholder="Seña \$ (Dejan Hoy)" value="0">
                         <select id="metodo_pago">
                             <option value="Efectivo">💵 Efectivo</option>
-                            <option value="Transferencia">📱 Transferencia / Mercado Pago</option>
+                            <option value="Transferencia">📱 Transferencia / MP</option>
                             <option value="Tarjeta">💳 Tarjeta de Crédito/Débito</option>
-                        </select>
-                        <select id="estado_trabajo">
-                            <option value="Pendiente">⏳ Pendiente (Taller)</option>
-                            <option value="Entregado">✅ Entregado Completo</option>
                         </select>
                     </div>
                 </div>
                 <button type="submit">⚡ Finalizar Venta e Imprimir Comprobante</button>
             </form>
+
+            <!-- BLOQUE DE ACCESO EXCLUSIVO DUEÑOS -->
+            <div class="box box-admin">
+                <h3 style="margin-top:0; color:#c2410c;">🔐 Panel de Carga de Stock (Exclusivo Dueños)</h3>
+                
+                <!-- Caja de Clave Inicial -->
+                <div id="login-admin-box">
+                    <label>Ingresá la Clave de Administrador:</label>
+                    <div class="grid-2">
+                        <input type="password" id="clave_admin" placeholder="••••••••">
+                        <button type="button" onclick="verificarClave()" class="btn-admin" style="margin-top:0;">Acceder</button>
+                    </div>
+                    <p id="error-clave" style="color:red; font-size:12px; margin-top:5px;" class="hidden">⚠️ Clave incorrecta.</p>
+                </div>
+
+                <!-- Formulario de Carga Manual (Se despliega al validar clave) -->
+                <div id="formulario-carga" class="hidden">
+                    <p style="font-size:13px; color:#c2410c; margin-top:0;"><b>¡Ingreso correcto!</b> Cargá los nuevos armazones al salón desde acá:</p>
+                    <form id="formCargaManual">
+                        <div class="grid-3">
+                            <input type="text" id="input_marca" placeholder="Marca (Ej: Ray-Ban)" required>
+                            <input type="text" id="input_modelo" placeholder="Modelo (Ej: Aviator)" required>
+                            <input type="text" id="input_color" placeholder="Color (Ej: Negro)" required>
+                        </div>
+                        <div class="grid-2" style="margin-top:10px;">
+                            <input type="number" id="input_stock" placeholder="Cantidad de Unidades (Ej: 5)" required min="1">
+                            <input type="number" id="input_precio" placeholder="Precio Sugerido Venta \$" required>
+                        </div>
+                        <button type="button" onclick="subirArmazonManual()" class="btn-admin" style="background:#ea580c;">📥 Insertar en Base de Datos de la Nube</button>
+                    </form>
+                </div>
+            </div>
         </div>
+
         <div class="aside-panel">
             <h2>📦 Stock en Salón</h2>
             <div id="listaStock" style="margin-top: 15px;">Cargando existencias...</div>
         </div>
     </div>
+
+    <!-- TICKET IMPRESIÓN -->
     <div id="ticket-impresion">
         <h3 style="text-align:center; margin-bottom:5px;">CHARME LUNETTES</h3>
         <p style="text-align:center; margin-top:0; font-size:11px;">Comprobante de Orden de Trabajo</p>
         <p>----------------------------------------</p>
         <p><strong>Fecha:</strong> <span id="t_fecha"></span></p>
         <p><strong>Cliente:</strong> <span id="t_cliente"></span></p>
-        <p><strong>Teléfono:</strong> <span id="t_telefono"></span></p>
         <p>----------------------------------------</p>
         <p><strong>OD:</strong> Esf: <span id="t_od_esf"></span> | Cil: <span id="t_od_cil"></span> | Eje: <span id="t_od_eje"></span>°</p>
         <p><strong>OI:</strong> Esf: <span id="t_oi_esf"></span> | Cil: <span id="t_oi_cil"></span> | Eje: <span id="t_oi_eje"></span>°</p>
         <p>----------------------------------------</p>
+        <p><strong>Armazón:</strong> <span id="t_marco_txt"></span></p>
         <p><strong>Total Trabajo:</strong> \$<span id="t_total"></span></p>
         <p><strong>Seña Dejada:</strong> \$<span id="t_sena"></span> (<span id="t_metodo"></span>)</p>
         <p style="font-size:16px;"><strong>SALDO RESTANTE: \$<span id="t_saldo"></span></strong></p>
         <p>----------------------------------------</p>
-        <p style="text-align:center; font-size:11px;">Conserve este ticket para el retiro.</p>
     </div>
+
     <script>
         const API_BASE = window.location.origin;
+        const CLAVE_DUEÑO = "Charme2026";
+
+        function verificarClave() {
+            const pass = document.getElementById('clave_admin').value;
+            if(pass === CLAVE_DUEÑO) {
+                document.getElementById('login-admin-box').classList.add('hidden');
+                document.getElementById('formulario-carga').classList.remove('hidden');
+            } else {
+                document.getElementById('error-clave').classList.remove('hidden');
+            }
+        }
+
         async function cargarProductos() {
             try {
                 const r = await fetch(`${API_BASE}/api/productos`);
                 const d = await r.json();
+                
                 const lista = document.getElementById('listaStock');
+                const select = document.getElementById('selectMarco');
+                
                 lista.innerHTML = "";
-                if(d.marcos && d.marcos.length > 0) {
-                    d.marcos.forEach(m => {
-                        lista.innerHTML += `<div class="stock-item"><span>👓 ${m.marca} - ${m.modelo}</span> <b>${m.stock} u.</b></div>`;
-                    });
-                } else {
-                    lista.innerHTML = "<p style='color:#94a3b8;'>No hay marcos cargados.</p>";
-                }
-            } catch(e) { 
-                document.getElementById('listaStock').innerHTML = "<div class='stock-item'>👓 Ray-Ban Aviator <b>6 u.</b></div><div class='stock-item'>👓 Vulk Detroit <b>4 u.</b></div><div class='stock-item'>👓 Infinit Way <b>5 u.</b></div>";
-            }
-        }
-        document.getElementById('formVenta').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const total = parseFloat(document.getElementById('precio_base_anteojo').value) || 0;
-            const sena = parseFloat(document.getElementById('monto_sena').value) || 0;
-            document.getElementById('t_fecha').innerText = new Date().toLocaleDateString('es-AR');
-            document.getElementById('t_cliente').innerText = document.getElementById('cliente').value;
-            document.getElementById('t_telefono').innerText = document.getElementById('telefono').value || 'No cargado';
-            document.getElementById('t_od_esf').innerText = document.getElementById('od_esf').value || '0.00';
-            document.getElementById('t_od_cil').innerText = document.getElementById('od_cil').value || '0.00';
-            document.getElementById('t_od_eje').innerText = document.getElementById('od_eje').value || '0';
-            document.getElementById('t_oi_esf').innerText = document.getElementById('oi_esf').value || '0.00';
-            document.getElementById('t_oi_cil').innerText = document.getElementById('oi_cil').value || '0.00';
-            document.getElementById('t_oi_eje').innerText = document.getElementById('oi_eje').value || '0';
-            document.getElementById('t_total').innerText = total.toFixed(2);
-            document.getElementById('t_sena').innerText = sena.toFixed(2);
-            document.getElementById('t_metodo').innerText = document.getElementById('metodo_pago').value;
-            document.getElementById('t_saldo').innerText = (total - sena).toFixed(2);
-            window.print();
-            document.getElementById('formVenta').reset();
-            cargarProductos();
-        });
-        window.onload = cargarProductos;
-    </script>
-</body>
-</html>
