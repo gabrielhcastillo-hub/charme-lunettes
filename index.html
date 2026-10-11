@@ -6,10 +6,10 @@
     <title>CHARME LUNETTES - Sistema Central</title>
     <style>
         body { font-family: sans-serif; background-color: #f1f5f9; padding: 20px; color: #334155; }
-        .container { max-width: 1250px; margin: 0 auto; display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; }
+        .container { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; }
         @media(max-width: 1024px) { .container { grid-template-columns: 1fr; } }
         .main-panel { background: white; padding: 25px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .aside-panel { background: #0f172a; color: white; padding: 20px; border-radius: 12px; height: fit-content; }
+        .aside-panel { background: #0f172a; color: white; padding: 20px; border-radius: 12px; height: fit-content; margin-bottom: 20px; }
         h1 { color: #0f172a; margin-top: 0; font-size: 24px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
         h3 { font-size: 13px; text-transform: uppercase; color: #1e293b; margin-bottom: 12px; margin-top: 0; border-left: 4px solid #3b82f6; padding-left: 8px; }
         .box { background: #f8fafc; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 15px; }
@@ -17,7 +17,6 @@
         .box-green { background: #ecfdf5; border-color: #a7f3d0; }
         .box-amber { background: #fff7ed; border-color: #ffedd5; }
         .box-purple { background: #faf5ff; border-color: #e9d5ff; }
-        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
         .grid-receta { display: grid; grid-template-columns: 80px 1fr 1fr 1fr; gap: 6px; align-items: center; margin-top: 4px; }
@@ -28,8 +27,10 @@
         .btn-add { background: #ea580c; padding: 8px; font-size: 13px; margin-top: 0; height: 36px; }
         .stock-item { display: flex; justify-content: space-between; border-bottom: 1px solid #334155; padding: 6px 0; font-size: 12px; }
         .item-row { display: flex; justify-content: space-between; background: white; padding: 6px; border-radius: 6px; border: 1px solid #e2e8f0; margin-top: 4px; font-size: 12px; }
-        .receta-header { font-size: 11px; font-weight: bold; color: #1e40af; background: #dbeafe; padding: 4px 8px; border-radius: 4px; margin-top: 10px; }
+        .history-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 12px; }
+        .receta-header { font-size: 11px; font-weight: bold; color: #1e40af; background: #dbeafe; padding: 4px 8px; border-radius: 4px; margin-top: 12px; text-transform: uppercase; }
         .lbl-txt { font-size: 12px; font-weight: bold; color: #334155; text-align: center; }
+        .hidden { display: none !important; }
         @media print {
             body *, .container { display: none !important; }
             #ticket-impresion, #ticket-impresion * { display: block !important; }
@@ -44,18 +45,20 @@
             <h1>👓 CHARME LUNETTES</h1>
             <form id="formVenta">
                 
-                <!-- 1. Datos del Cliente -->
+                <!-- 1. Datos Operación y Cliente -->
                 <div class="box">
-                    <h3>1. Datos del Cliente</h3>
-                    <div class="grid-2">
-                        <div><label>Nombre Completo</label><input type="text" id="cliente" required placeholder="Ej. Gabriel Castillo"></div>
-                        <div><label>Teléfono / Celular</label><input type="tel" id="telefono" placeholder="Ej. 1139513910"></div>
+                    <h3>1. Datos de la Operación</h3>
+                    <div class="grid-4">
+                        <div><label>Fecha del Trabajo</label><input type="date" id="fecha_trabajo" required></div>
+                        <div><label>Vendedor</label><input type="text" id="vendedor" required placeholder="Ej. Ana"></div>
+                        <div><label>Nombre del Cliente</label><input type="text" id="cliente" required placeholder="Ej. Gabriel Castillo"></div>
+                        <div><label>Teléfono / Celular</label><input type="tel" id="telefono" placeholder="Ej. 11 3951-3910"></div>
                     </div>
                 </div>
 
                 <!-- 2. Cristales y Armazón -->
                 <div class="box box-blue">
-                    <h3>2. Armazón y Cristales Recetados / Sol</h3>
+                    <h3>2. Armazón y Cristales Recetados</h3>
                     <div class="grid-3">
                         <div><label>Marca Armazón</label><input type="text" id="marco_marca" placeholder="Ej. Vulk"></div>
                         <div><label>Modelo / Código</label><input type="text" id="marco_modelo" placeholder="Ej. Detroit"></div>
@@ -68,49 +71,46 @@
                                 <option value="Monofocal">👁️ Monofocal</option>
                                 <option value="Bifocal">👓 Bifocal</option>
                                 <option value="Multifocal">💎 Multifocal</option>
-                                <option value="Solo Armazón">🕶️ Sin Cristales (Solo Sol/Marco)</option>
+                                <option value="Solo Armazón">🕶️ Solo Sol / Armazón</option>
                             </select>
                         </div>
-                        <div><label>Tratamiento / Material</label><input type="text" id="cristal_trat" placeholder="Ej. Blue Light / Antirreflex"></div>
+                        <div><label>Tratamiento / Material</label><input type="text" id="cristal_trat" placeholder="Ej. Antirreflex / Filtro Azul"></div>
                         <div><label>Precio Cristales (\$)</label><input type="number" id="p_cristal" value="0" min="0" oninput="calcularTotales()"></div>
                     </div>
                 </div>
 
                 <!-- 3. Receta Oftalmológica Completa -->
                 <div class="box box-blue">
-                    <h3>🩺 3. Receta Oftalmológica (Lejos, Cerca y Adición)</h3>
+                    <h3>3. Receta Oftalmológica (Lejos por separado de Cerca)</h3>
                     
-                    <div class="receta-header">OJO DERECHO (OD)</div>
-                    <div class="grid-receta" style="margin-top:6px;"><div class="lbl-txt"></div><label>Esférico</label><label>Cilíndrico</label><label>Eje°</label></div>
-                    <div class="grid-receta"><div class="lbl-txt">Lejos</div><input type="number" step="0.25" id="od_l_esf" placeholder="0.00"><input type="number" step="0.25" id="od_l_cil" placeholder="0.00"><input type="number" id="od_l_eje" placeholder="0°"></div>
-                    <div class="grid-receta"><div class="lbl-txt">Cerca</div><input type="number" step="0.25" id="od_c_esf" placeholder="0.00"><input type="number" step="0.25" id="od_c_cil" placeholder="0.00"><input type="number" id="od_c_eje" placeholder="0°"></div>
-                    <div class="grid-3" style="margin-top: 8px;">
-                        <div><label>Adición</label><input type="number" step="0.25" id="od_adi" placeholder="Add"></div>
-                        <div><label>D.I. (mm)</label><input type="number" step="0.5" id="od_di" placeholder="Dist. Interpupilar"></div>
-                        <div><label>Altura (mm)</label><input type="number" step="0.5" id="od_alt" placeholder="Altura"></div>
-                    </div>
+                    <div class="receta-header">👓 GRADUACIÓN DE LEJOS</div>
+                    <div class="grid-receta" style="margin-top:4px;"><div class="lbl-txt"></div><label>Esférico</label><label>Cilíndrico</label><label>Eje°</label></div>
+                    <div class="grid-receta"><div class="lbl-txt">O.D.</div><input type="number" step="0.25" id="od_l_esf" placeholder="0.00"><input type="number" step="0.25" id="od_l_cil" placeholder="0.00"><input type="number" id="od_l_eje" placeholder="0°"></div>
+                    <div class="grid-receta"><div class="lbl-txt">O.I.</div><input type="number" step="0.25" id="oi_l_esf" placeholder="0.00"><input type="number" step="0.25" id="oi_l_cil" placeholder="0.00"><input type="number" id="oi_l_eje" placeholder="0°"></div>
 
-                    <div class="receta-header">OJO IZQUIERDO (OI)</div>
-                    <div class="grid-receta" style="margin-top:6px;"><div class="lbl-txt"></div><label>Esférico</label><label>Cilíndrico</label><label>Eje°</label></div>
-                    <div class="grid-receta"><div class="lbl-txt">Lejos</div><input type="number" step="0.25" id="oi_l_esf" placeholder="0.00"><input type="number" step="0.25" id="oi_l_cil" placeholder="0.00"><input type="number" id="oi_l_eje" placeholder="0°"></div>
-                    <div class="grid-receta"><div class="lbl-txt">Cerca</div><input type="number" step="0.25" id="oi_c_esf" placeholder="0.00"><input type="number" step="0.25" id="oi_c_cil" placeholder="0.00"><input type="number" id="oi_c_eje" placeholder="0°"></div>
-                    <div class="grid-3" style="margin-top: 8px;">
-                        <div><label>Adición</label><input type="number" step="0.25" id="oi_adi" placeholder="Add"></div>
-                        <div><label>D.I. (mm)</label><input type="number" step="0.5" id="oi_di" placeholder="Dist. Interpupilar"></div>
-                        <div><label>Altura (mm)</label><input type="number" step="0.5" id="oi_alt" placeholder="Altura"></div>
+                    <div class="receta-header">🔎 GRADUACIÓN DE CERCA</div>
+                    <div class="grid-receta" style="margin-top:4px;"><div class="lbl-txt"></div><label>Esférico</label><label>Cilíndrico</label><label>Eje°</label></div>
+                    <div class="grid-receta"><div class="lbl-txt">O.D.</div><input type="number" step="0.25" id="od_c_esf" placeholder="0.00"><input type="number" step="0.25" id="od_c_cil" placeholder="0.00"><input type="number" id="od_c_eje" placeholder="0°"></div>
+                    <div class="grid-receta"><div class="lbl-txt">O.I.</div><input type="number" step="0.25" id="oi_c_esf" placeholder="0.00"><input type="number" step="0.25" id="oi_c_cil" placeholder="0.00"><input type="number" id="oi_c_eje" placeholder="0°"></div>
+
+                    <div class="receta-header" style="background:#fee2e2; color:#991b1b;">📏 MEDIDAS ÚNICAS CENTRALES</div>
+                    <div class="grid-3" style="margin-top: 6px;">
+                        <div><label>Adición (Add)</label><input type="number" step="0.25" id="receta_adi" placeholder="0.00"></div>
+                        <div><label>Distancia Pupilar (D.P.)</label><input type="number" step="0.5" id="receta_dp" placeholder="mm"></div>
+                        <div><label>Altura</label><input type="number" step="0.5" id="receta_alt" placeholder="mm"></div>
                     </div>
                 </div>
-                <!-- 4. Sección Lentes de Contacto -->
+                <!-- 4. Lentes de Contacto -->
                 <div class="box box-purple">
                     <h3>👁️ 4. Contactología / Lentes de Contacto</h3>
                     <div class="grid-3">
-                        <div><label>Tipo (Descartable/Anual/Gas)</label><input type="text" id="lc_tipo" placeholder="Ej. Descartable Mensual"></div>
-                        <div><label>Marca / Laboratorio</label><input type="text" id="lc_marca" placeholder="Ej. Acuvue Oasys"></div>
-                        <div><label>Precio Lentes LC (\$)</label><input type="number" id="p_lc" value="0" min="0" oninput="calcularTotales()"></div>
+                        <div><label>Tipo de Lente</label><input type="text" id="lc_tipo" placeholder="Ej. Descartable / Anual"></div>
+                        <div><label>Marca / Laboratorio</label><input type="text" id="lc_marca" placeholder="Ej. Acuvue / B&L"></div>
+                        <div><label>Precio Lentes (\$)</label><input type="number" id="p_lc" value="0" min="0" oninput="calcularTotales()"></div>
                     </div>
                     <div class="grid-2" style="margin-top:8px;">
-                        <div><label>Graduación OD</label><input type="text" id="lc_grad_od" placeholder="Ej. -2.50 -0.50 x 90°"></div>
-                        <div><label>Graduación OI</label><input type="text" id="lc_grad_oi" placeholder="Ej. -2.25"></div>
+                        <div><label>Graduación O.D.</label><input type="text" id="lc_grad_od" placeholder="Ej. -3.00"></div>
+                        <div><label>Graduación O.I.</label><input type="text" id="lc_grad_oi" placeholder="Ej. -2.75"></div>
                     </div>
                 </div>
 
@@ -118,46 +118,48 @@
                 <div class="box box-amber">
                     <h3>🛍️ 5. Artículos Varios y Reparaciones (Carga Libre)</h3>
                     <div class="grid-3" style="align-items: end;">
-                        <div><label>Descripción del Artículo o Arreglo</label><input type="text" id="acc_nombre" placeholder="Ej. Líquido Limpiador 120ml / Soldadura"></div>
-                        <div><label>Importe (\$)</label><input type="number" id="acc_precio" placeholder="Precio \$"></div>
+                        <div><label>Descripción Artículo</label><input type="text" id="acc_nombre" placeholder="Ej. Estuche / Líquido"></div>
+                        <div><label>Importe (\$)</label><input type="number" id="acc_precio" placeholder="0.00"></div>
                         <div><button type="button" onclick="agregarAdicionalLibre()" class="btn-add" style="background:#ea580c;">Agregar +</button></div>
                     </div>
                     <div id="listaAccesoriosVenta" style="margin-top:8px;"></div>
                 </div>
 
-                <!-- 6. Liquidación Final Automática -->
+                <!-- 6. Liquidación Final con Descuento -->
                 <div class="box box-green">
-                    <h3>💰 6. Liquidación y Cierre de Caja</h3>
-                    <div class="grid-3">
+                    <h3>💰 6. Liquidación y Caja</h3>
+                    <div class="grid-4">
                         <div><label>Total Adicionales (\$)</label><input type="number" id="tot_acc_input" value="0" readonly style="background:#f1f5f9;"></div>
-                        <div><label>Seña Dejada (\$)</label><input type="number" id="monto_sena" value="0" oninput="calcularTotales()"></div>
+                        <div><label>Descuento (%)</label><input type="number" id="porcentaje_desc" value="0" min="0" max="100" oninput="calcularTotales()"></div>
+                        <div><label>Seña Recibida (\$)</label><input type="number" id="monto_sena" value="0" oninput="calcularTotales()"></div>
                         <div>
-                            <label>Método de Pago</label>
+                            <label>Forma de Pago</label>
                             <select id="metodo_pago">
                                 <option value="Efectivo">💵 Efectivo</option>
                                 <option value="Transferencia">📱 Transferencia / MP</option>
-                                <option value="Tarjeta">💳 Tarjeta de Crédito/Débito</option>
+                                <option value="Tarjeta">💳 Tarjeta</option>
                             </select>
                         </div>
                     </div>
-                    <div class="grid-2" style="background:white; padding:12px; border-radius:8px; border:1px solid #a7f3d0; margin-top:12px;">
-                        <div><span style="font-size:10px; font-weight:bold; color:#047857;">TOTAL COMPRA NETO</span><br><b id="lbl_total" style="font-size:22px;">\$ 0.00</b></div>
-                        <div style="text-align:right;"><span style="font-size:10px; font-weight:bold; color:#b45309;">SALDO A ABONAR EN RETIRO</span><br><b id="lbl_saldo" style="font-size:22px; color:#b45309;">\$ 0.00</b></div>
+                    <div class="grid-3" style="background:white; padding:12px; border-radius:8px; border:1px solid #a7f3d0; margin-top:12px; grid-template-columns: 1fr 1fr 1.2fr;">
+                        <div><span style="font-size:10px; font-weight:bold; color:#64748b;">PRECIO DE LISTA</span><br><b id="lbl_total_lista" style="font-size:16px; color:#64748b; text-decoration: line-through;">\$ 0.00</b></div>
+                        <div><span style="font-size:10px; font-weight:bold; color:#047857;">TOTAL NETO CON DESC.</span><br><b id="lbl_total" style="font-size:18px; color:#047857;">\$ 0.00</b></div>
+                        <div style="text-align:right;"><span style="font-size:10px; font-weight:bold; color:#b45309;">SALDO EN RETIRO</span><br><b id="lbl_saldo" style="font-size:18px; color:#b45309;">\$ 0.00</b></div>
                     </div>
                     <div style="margin-top:10px;">
-                        <label>Estado de la Orden</label>
+                        <label>Estado Inicial</label>
                         <select id="estado_trabajo">
-                            <option value="Pendiente">⏳ Pendiente (Va a Taller/Laboratorio)</option>
-                            <option value="Entregado">✅ Entregado y Cobrado Total</option>
+                            <option value="Pendiente">⏳ Pendiente (Va a Taller)</option>
+                            <option value="Entregado">✅ Entregado y Cobrado Completo</option>
                         </select>
                     </div>
                 </div>
-                <button type="submit">⚡ Finalizar Trabajo e Imprimir Ticket Directo</button>
+                <button type="submit">🚀 Finalizar e Imprimir Ticket Directo</button>
             </form>
 
             <!-- 7. CONTROL DE INVENTARIO MANUAL -->
             <div class="box box-amber" style="margin-top:30px; background:#fffbeb;">
-                <h3 style="color:#b45309;">📥 Ingresar Armazones Nuevos al Inventario</h3>
+                <h3 style="color:#b45309;">📥 Ingresar Nuevos Armazones al Salón</h3>
                 <form id="formCargaManual">
                     <div class="grid-3">
                         <input type="text" id="input_marca" placeholder="Marca" required>
@@ -166,17 +168,25 @@
                     </div>
                     <div class="grid-2" style="margin-top:8px;">
                         <input type="number" id="input_stock" placeholder="Unidades" required min="1">
-                        <input type="number" id="input_precio" placeholder="Precio Lista \$" required>
+                        <input type="number" id="input_precio" placeholder="Precio Sugerido Venta \$" required>
                     </div>
-                    <button type="button" onclick="subirArmazonManual()" style="background:#d97706; margin-top:10px;">📥 Cargar al Stock Central</button>
+                    <button type="button" onclick="subirArmazonManual()" style="background:#d97706; margin-top:10px;">📥 Cargar al Catálogo de Existencias</button>
                 </form>
             </div>
         </div>
 
-        <!-- LATERAL: MONITOR DE STOCK -->
-        <div class="aside-panel">
-            <h2>📦 Stock en Salón</h2>
-            <div id="listaStock" style="margin-top: 15px;">Cargando inventario...</div>
+        <div>
+            <div class="aside-panel">
+                <h2>📦 Stock en Salón</h2>
+                <div id="listaStock" style="margin-top: 15px;">Cargando catálogo...</div>
+            </div>
+
+            <!-- BUSCADOR DE HISTORIAL DE CLIENTES -->
+            <div class="main-panel" style="padding:15px; border-radius:12px; margin-top:0;">
+                <h2 style="font-size:14px; color:#0f172a; margin-top:0;">🔎 Buscador Clínico e Historial</h2>
+                <input type="text" id="search_nombre" oninput="buscarHistorial()" placeholder="Escribí el nombre del cliente...">
+                <div id="historialResultados" style="margin-top:10px;"></div>
+            </div>
         </div>
     </div>
 
@@ -186,19 +196,20 @@
         <p style="text-align:center; margin-top:0; font-size:11px;">Comprobante de Orden de Trabajo</p>
         <p>----------------------------------------</p>
         <p><strong>Fecha:</strong> <span id="t_fecha"></span></p>
+        <p><strong>Vendedor:</strong> <span id="t_vendedor"></span></p>
         <p><strong>Cliente:</strong> <span id="t_cliente"></span></p>
         <p><strong>Teléfono:</strong> <span id="t_telefono"></span></p>
         <p>----------------------------------------</p>
         <p><strong>Armazón:</strong> <span id="t_marco"></span></p>
         <p><strong>Cristales:</strong> <span id="t_tipo_c"></span> - <span id="t_trat_c"></span></p>
         <p>----------------------------------------</p>
-        <p style="font-weight:bold; margin-bottom:2px;">📐 GRADUACIÓN OFTALMOLÓGICA:</p>
-        <p>OD Lejos: Esf: <span id="t_od_l_esf"></span> | Cil: <span id="t_od_l_cil"></span> | Eje: <span id="t_od_l_eje"></span>°</p>
-        <p>OD Cerca: Esf: <span id="t_od_c_esf"></span> | Cil: <span id="t_od_c_cil"></span> | Eje: <span id="t_od_c_eje"></span>°</p>
-        <p>OD Adi: <span id="t_od_adi"></span> | DI: <span id="t_od_di"></span>mm | Alt: <span id="t_od_alt"></span>mm</p>
-        <p style="margin-top:4px;">OI Lejos: Esf: <span id="t_oi_l_esf"></span> | Cil: <span id="t_oi_l_cil"></span> | Eje: <span id="t_oi_l_eje"></span>°</p>
-        <p>OI Cerca: Esf: <span id="t_oi_c_esf"></span> | Cil: <span id="t_oi_c_cil"></span> | Eje: <span id="t_oi_c_eje"></span>°</p>
-        <p>OI Adi: <span id="t_oi_adi"></span> | DI: <span id="t_oi_di"></span>mm | Alt: <span id="t_oi_alt"></span>mm</p>
+        <p style="font-weight:bold; margin-bottom:2px;">📐 GRADUACIÓN DE LEJOS:</p>
+        <p>OD: Esf: <span id="t_od_l_esf"></span> | Cil: <span id="t_od_l_cil"></span> | Eje: <span id="t_od_l_eje"></span>°</p>
+        <p>OI: Esf: <span id="t_oi_l_esf"></span> | Cil: <span id="t_oi_l_cil"></span> | Eje: <span id="t_oi_l_eje"></span>°</p>
+        <p style="font-weight:bold; margin-bottom:2px; margin-top:5px;">🔍 GRADUACIÓN DE CERCA:</p>
+        <p>OD: Esf: <span id="t_od_c_esf"></span> | Cil: <span id="t_od_c_cil"></span> | Eje: <span id="t_od_c_eje"></span>°</p>
+        <p>OI: Esf: <span id="t_oi_c_esf"></span> | Cil: <span id="t_oi_c_cil"></span> | Eje: <span id="t_oi_c_eje"></span>°</p>
+        <p style="margin-top:5px;"><strong>Adición:</strong> <span id="t_adi"></span> | <strong>D.P:</strong> <span id="t_dp"></span>mm | <strong>Alt:</strong> <span id="t_alt"></span>mm</p>
         <div id="t_seccion_lc" class="hidden">
             <p>----------------------------------------</p>
             <p style="font-weight:bold; margin-bottom:2px;">👁️ LENTES DE CONTACTO (LC):</p>
@@ -206,54 +217,30 @@
             <p>Grad LC OD: <span id="t_lc_od"></span> | OI: <span id="t_lc_oi"></span></p>
         </div>
         <p>----------------------------------------</p>
-        <p><strong>Artículos Varios:</strong> <span id="t_acc_txt"></span></p>
+        <p><strong>Adicionales/Varios:</strong> <span id="t_acc_txt"></span></p>
         <p>----------------------------------------</p>
-        <p><strong>TOTAL NETO ORDEN:</strong> \$<span id="t_total"></span></p>
-        <p><strong>SEÑA ENTRADA:</strong> \$<span id="t_sena"></span> (<span id="t_metodo"></span>)</p>
+        <p><strong>PRECIO DE LISTA:</strong> \$<span id="t_total_lista"></span></p>
+        <p><strong>TOTAL CON NETO DESC:</strong> \$<span id="t_total"></span></p>
+        <p><strong>SEÑA RECIBIDA:</strong> \$<span id="t_sena"></span> (<span id="t_metodo"></span>)</p>
         <p style="font-size:14px;"><strong>SALDO EN RETIRO: \$<span id="t_saldo"></span></strong></p>
         <p>----------------------------------------</p>
     </div>
 
     <script>
         let adicionalesVenta =;
+        let historialClientes = [
+            {
+                fecha: "09/10/2026", vendedor: "Ana", cliente: "Carlos Gomez", telefono: "1144445555",
+                marco: "Vulk Detroit", cristales: "Multifocal - Filtro Azul",
+                od_l: "Esf: -1.50 Cil: -0.50 Eje: 90°", oi_l: "Esf: -1.25 Cil: 0.00 Eje: 0°",
+                od_c: "Esf: +0.50 Cil: -0.50 Eje: 90°", oi_c: "Esf: +0.75 Cil: 0.00 Eje: 0°",
+                adi: "2.00", dp: "62", alt: "18", lc: "No aplica", adicionales: "Ninguno", total: 85000, saldo: 0
+            }
+        ];
         let inventarioLocal = [
-            {marca: "Ray-Ban", modelo: "Aviator", color: "Negro", stock: 6, precio: 45000},
-            {marca: "Vulk", modelo: "Detroit", color: "Carey", stock: 4, precio: 38000}
+            {id: 1, marca: "Ray-Ban", modelo: "Aviator", color: "Negro", stock: 6, precio: 45000},
+            {id: 2, marca: "Vulk", modelo: "Detroit", color: "Carey", stock: 4, precio: 38000},
+            {id: 3, marca: "Infinit", modelo: "Way", color: "Transparente", stock: 5, precio: 29000}
         ];
 
         function cargarProductos() {
-            const lista = document.getElementById('listaStock');
-            lista.innerHTML = "";
-            inventarioLocal.forEach(m => {
-                lista.innerHTML += `<div class="stock-item"><span>👓 ${m.marca} ${m.modelo} (${m.color})</span> <b>${m.stock} u.</b></div>`;
-            });
-        }
-
-        function agregarAdicionalLibre() {
-            const nombre = document.getElementById('acc_nombre').value;
-            const precio = parseFloat(document.getElementById('acc_precio').value) || 0;
-            if(!nombre || precio <= 0) return;
-            
-            adicionalesVenta.push({ nombre, precio });
-            document.getElementById('acc_nombre').value = "";
-            document.getElementById('acc_precio').value = "";
-            
-            actualizarListaAdicionales();
-        }
-
-        function actualizarListaAdicionales() {
-            const container = document.getElementById('listaAccesoriosVenta');
-            container.innerHTML = "";
-            let acumulado = 0;
-            adicionalesVenta.forEach(item => {
-                acumulado += item.precio;
-                container.innerHTML += `<div class="item-row"><span>📦 ${item.nombre}</span> <b>\$${item.precio.toFixed(2)}</b></div>`;
-            });
-            document.getElementById('tot_acc_input').value = acumulado;
-            calcularTotales();
-        }
-
-        function calcularTotales() {
-            const m = parseFloat(document.getElementById('p_marco').value) || 0;
-            const c = parseFloat(document.getElementById('p_cristal').value) || 0;
-            const lc = parseFloat(document.getElementById('p_lc').value) || 0;
