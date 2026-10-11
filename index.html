@@ -46,7 +46,6 @@
             <h1>👓 CHARME LUNETTES</h1>
             <form id="formVenta">
                 
-                <!-- 1. Datos Operación y Cliente -->
                 <div class="box">
                     <h3>1. Datos de la Operación</h3>
                     <div class="grid-4">
@@ -57,7 +56,6 @@
                     </div>
                 </div>
 
-                <!-- 2. Cristales y Armazón -->
                 <div class="box box-blue">
                     <h3>2. Armazón y Cristales Recetados</h3>
                     <div class="grid-3">
@@ -69,10 +67,10 @@
                         <div>
                             <label>Tipo de Cristal</label>
                             <select id="tipo_cristal">
-                                <option value="Monofocal">👁️ Monofocal</option>
-                                <option value="Bifocal">👓 Bifocal</option>
-                                <option value="Multifocal">💎 Multifocal</option>
-                                <option value="Solo Armazón">🕶️ Solo Sol / Armazón</option>
+                                <option value="Monofocal"> Monofocal</option>
+                                <option value="Bifocal"> Bifocal</option>
+                                <option value="Multifocal"> Multifocal</option>
+                                <option value="Solo Armazón"> Solo Sol / Armazón</option>
                             </select>
                         </div>
                         <div><label>Tratamiento / Material</label><input type="text" id="cristal_trat" placeholder="Ej. Antirreflex / Filtro Azul"></div>
@@ -80,28 +78,26 @@
                     </div>
                 </div>
 
-                <!-- 3. Receta Oftalmológica Completa -->
                 <div class="box box-blue">
                     <h3>3. Receta Oftalmológica (Lejos por separado de Cerca)</h3>
-                    
-                    <div class="receta-header">👓 GRADUACIÓN DE LEJOS</div>
+                    <div class="receta-header"> GRADUACIÓN DE LEJOS</div>
                     <div class="grid-receta" style="margin-top:4px;"><div class="lbl-txt"></div><label>Esférico</label><label>Cilíndrico</label><label>Eje°</label></div>
                     <div class="grid-receta"><div class="lbl-txt">O.D.</div><input type="number" step="0.25" id="od_l_esf" placeholder="0.00"><input type="number" step="0.25" id="od_l_cil" placeholder="0.00"><input type="number" id="od_l_eje" placeholder="0°"></div>
                     <div class="grid-receta"><div class="lbl-txt">O.I.</div><input type="number" step="0.25" id="oi_l_esf" placeholder="0.00"><input type="number" step="0.25" id="oi_l_cil" placeholder="0.00"><input type="number" id="oi_l_eje" placeholder="0°"></div>
 
-                    <div class="receta-header">🔎 GRADUACIÓN DE CERCA</div>
+                    <div class="receta-header"> GRADUACIÓN DE CERCA</div>
                     <div class="grid-receta" style="margin-top:4px;"><div class="lbl-txt"></div><label>Esférico</label><label>Cilíndrico</label><label>Eje°</label></div>
                     <div class="grid-receta"><div class="lbl-txt">O.D.</div><input type="number" step="0.25" id="od_c_esf" placeholder="0.00"><input type="number" step="0.25" id="od_c_cil" placeholder="0.00"><input type="number" id="od_c_eje" placeholder="0°"></div>
                     <div class="grid-receta"><div class="lbl-txt">O.I.</div><input type="number" step="0.25" id="oi_c_esf" placeholder="0.00"><input type="number" step="0.25" id="oi_c_cil" placeholder="0.00"><input type="number" id="oi_c_eje" placeholder="0°"></div>
 
-                    <div class="receta-header" style="background:#fee2e2; color:#991b1b;">📏 MEDIDAS ÚNICAS CENTRALES</div>
+                    <div class="receta-header" style="background:#fee2e2; color:#991b1b;"> MEDIDAS ÚNICAS CENTRALES</div>
                     <div class="grid-3" style="margin-top: 6px;">
                         <div><label>Adición (Add)</label><input type="number" step="0.25" id="receta_adi" placeholder="0.00"></div>
                         <div><label>Distancia Pupilar (D.P.)</label><input type="number" step="0.5" id="receta_dp" placeholder="mm"></div>
                         <div><label>Altura</label><input type="number" step="0.5" id="receta_alt" placeholder="mm"></div>
                     </div>
                 </div>
-                <!-- 4. Lentes de Contacto -->
+
                 <div class="box box-purple">
                     <h3>👁️ 4. Contactología / Lentes de Contacto</h3>
                     <div class="grid-3">
@@ -115,7 +111,6 @@
                     </div>
                 </div>
 
-                <!-- 5. Artículos Adicionales Libres -->
                 <div class="box box-amber">
                     <h3>🛍️ 5. Artículos Varios y Reparaciones (Carga Libre)</h3>
                     <div class="grid-3" style="align-items: end;">
@@ -126,125 +121,3 @@
                     <div id="listaAccesoriosVenta" style="margin-top:8px;"></div>
                 </div>
 
-                <!-- 6. Liquidación Final con Descuento -->
-                <div class="box box-green">
-                    <h3>💰 6. Liquidación y Caja</h3>
-                    <div class="grid-4">
-                        <div><label>Total Adicionales (\$)</label><input type="number" id="tot_acc_input" value="0" readonly style="background:#f1f5f9;"></div>
-                        <div><label>Descuento (%)</label><input type="number" id="porcentaje_desc" value="0" min="0" max="100"></div>
-                        <div><label>Seña Recibida (\$)</label><input type="number" id="monto_sena" value="0"></div>
-                        <div>
-                            <label>Forma de Pago</label>
-                            <select id="metodo_pago">
-                                <option value="Efectivo">💵 Efectivo</option>
-                                <option value="Transferencia">📱 Transferencia / MP</option>
-                                <option value="Tarjeta">💳 Tarjeta</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="grid-3" style="background:white; padding:12px; border-radius:8px; border:1px solid #a7f3d0; margin-top:12px; grid-template-columns: 1fr 1fr 1.2fr;">
-                        <div><span style="font-size:10px; font-weight:bold; color:#64748b;">PRECIO DE LISTA</span><br><b id="lbl_total_lista" style="font-size:16px; color:#64748b; text-decoration: line-through;">\$ 0.00</b></div>
-                        <div><span style="font-size:10px; font-weight:bold; color:#047857;">TOTAL NETO CON DESC.</span><br><b id="lbl_total" style="font-size:18px; color:#047857;">\$ 0.00</b></div>
-                        <div style="text-align:right;"><span style="font-size:10px; font-weight:bold; color:#b45309;">SALDO EN RETIRO</span><br><b id="lbl_saldo" style="font-size:18px; color:#b45309;">\$ 0.00</b></div>
-                    </div>
-                    <div style="margin-top:10px;">
-                        <label>Estado Inicial</label>
-                        <select id="estado_trabajo">
-                            <option value="Pendiente">⏳ Pendiente (Va a Taller)</option>
-                            <option value="Entregado">✅ Entregado y Cobrado Completo</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit">🚀 Finalizar e Imprimir Ticket Directo</button>
-            </select>
-
-            <!-- 7. CONTROL DE INVENTARIO MANUAL -->
-            <div class="box box-amber" style="margin-top:30px; background:#fffbeb;">
-                <h3 style="color:#b45309;">📥 Ingresar Nuevos Armazones al Salón</h3>
-                <form id="formCargaManual">
-                    <div class="grid-3">
-                        <input type="text" id="input_marca" placeholder="Marca" required>
-                        <input type="text" id="input_modelo" placeholder="Modelo" required>
-                        <input type="text" id="input_color" placeholder="Color" required>
-                    </div>
-                    <div class="grid-2" style="margin-top:8px;">
-                        <input type="number" id="input_stock" placeholder="Unidades" required min="1">
-                        <input type="number" id="input_precio" placeholder="Precio Sugerido Venta \$" required>
-                    </div>
-                    <button type="button" onclick="subirArmazonManual()" style="background:#d97706; margin-top:10px;">📥 Cargar al Catálogo de Existencias</button>
-                </form>
-            </div>
-        </div>
-
-        <div>
-            <div class="aside-panel">
-                <h2>📦 Stock en Salón</h2>
-                <div id="listaStock" style="margin-top: 15px;">Cargando catálogo...</div>
-            </div>
-
-            <!-- BUSCADOR DE HISTORIAL DE CLIENTES -->
-            <div class="main-panel" style="padding:15px; border-radius:12px; margin-top:0;">
-                <h2 style="font-size:14px; color:#0f172a; margin-top:0;">🔎 Buscador Clínico e Historial</h2>
-                <input type="text" id="search_nombre" oninput="buscarHistorial()" placeholder="Escribí el nombre del cliente...">
-                <div id="historialResultados" style="margin-top:10px;"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- TICKET DE IMPRESIÓN -->
-    <div id="ticket-impresion">
-        <h2 style="text-align:center; margin-bottom:3px;">CHARME LUNETTES</h2>
-        <p style="text-align:center; margin-top:0; font-size:11px;">Comprobante de Orden de Trabajo</p>
-        <p>----------------------------------------</p>
-        <p><strong>Fecha:</strong> <span id="t_fecha"></span></p>
-        <p><strong>Vendedor:</strong> <span id="t_vendedor"></span></p>
-        <p><strong>Cliente:</strong> <span id="t_cliente"></span></p>
-        <p><strong>Teléfono:</strong> <span id="t_telefono"></span></p>
-        <p>----------------------------------------</p>
-        <p><strong>Armazón:</strong> <span id="t_marco"></span></p>
-        <p><strong>Cristales:</strong> <span id="t_tipo_c"></span> - <span id="t_trat_c"></span></p>
-        <p>----------------------------------------</p>
-        <p style="font-weight:bold; margin-bottom:2px;">📐 GRADUACIÓN DE LEJOS:</p>
-        <p>OD: Esf: <span id="t_od_l_esf"></span> | Cil: <span id="t_od_l_cil"></span> | Eje: <span id="t_od_l_eje"></span>°</p>
-        <p>OI: Esf: <span id="t_oi_l_esf"></span> | Cil: <span id="t_oi_l_cil"></span> | Eje: <span id="t_oi_l_eje"></span>°</p>
-        <p style="font-weight:bold; margin-bottom:2px; margin-top:5px;">🔍 GRADUACIÓN DE CERCA:</p>
-        <p>OD: Esf: <span id="t_od_c_esf"></span> | Cil: <span id="t_od_c_cil"></span> | Eje: <span id="t_od_c_eje"></span>°</p>
-        <p>OI: Esf: <span id="t_oi_c_esf"></span> | Cil: <span id="t_oi_c_cil"></span> | Eje: <span id="t_oi_c_eje"></span>°</p>
-        <p style="margin-top:5px;"><strong>Adición:</strong> <span id="t_adi"></span> | <strong>D.P:</strong> <span id="t_dp"></span>mm | <strong>Alt:</strong> <span id="t_alt"></span>mm</p>
-        <div id="t_seccion_lc" class="hidden">
-            <p>----------------------------------------</p>
-            <p style="font-weight:bold; margin-bottom:2px;">👁️ LENTES DE CONTACTO (LC):</p>
-            <p><span id="t_lc_t"></span> - <span id="t_lc_m"></span></p>
-            <p>Grad LC OD: <span id="t_lc_od"></span> | OI: <span id="t_lc_oi"></span></p>
-        </div>
-        <p>----------------------------------------</p>
-        <p><strong>Adicionales/Varios:</strong> <span id="t_acc_txt"></span></p>
-        <p>----------------------------------------</p>
-        <p><strong>PRECIO DE LISTA:</strong> \$<span id="t_total_lista"></span></p>
-        <p><strong>TOTAL CON NETO DESC:</strong> \$<span id="t_total"></span></p>
-        <p><strong>SEÑA RECIBIDA:</strong> \$<span id="t_sena"></span> (<span id="t_metodo"></span>)</p>
-        <p style="font-size:14px;"><strong>SALDO EN RETIRO: \$<span id="t_saldo"></span></strong></p>
-        <p>----------------------------------------</p>
-    </div>
-
-    <script>
-        let adicionalesVenta = [];
-        let historialClientes = [
-            {
-                fecha: "10/10/2026", vendedor: "Ana", cliente: "Carlos Gomez", telefono: "1144445555",
-                marco: "Vulk Detroit", cristales: "Multifocal - Filtro Azul",
-                od_l: "Esf: -1.50 Cil: -0.50 Eje: 90°", oi_l: "Esf: -1.25 Cil: 0.00 Eje: 0°",
-                od_c: "Esf: +0.50 Cil: -0.50 Eje: 90°", oi_c: "Esf: +0.75 Cil: 0.00 Eje: 0°",
-                adi: "2.00", dp: "62", alt: "18", lc: "No aplica", adicionales: "Ninguno", total: 85000, saldo: 0
-            }
-        ];
-        let inventarioLocal = [
-            {marca: "Ray-Ban", modelo: "Aviator", color: "Negro", stock: 6, precio: 45000},
-            {marca: "Vulk", modelo: "Detroit", color: "Carey", stock: 4, precio: 38000},
-            {marca: "Infinit", modelo: "Way", color: "Transparente", stock: 5, precio: 29000}
-        ];
-
-        function cargarProductos() {
-            const lista = document.getElementById('listaStock');
-            lista.innerHTML = "";
-            inventarioLocal.forEach(m => {
