@@ -6,7 +6,7 @@
     <title>CHARME LUNETTES - Sistema Central</title>
     <style>
         body { font-family: sans-serif; background-color: #f1f5f9; padding: 20px; color: #334155; }
-        .container { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; }
+        .container { max-width: 1250px; margin: 0 auto; display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; }
         @media(max-width: 1024px) { .container { grid-template-columns: 1fr; } }
         .main-panel { background: white; padding: 25px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .aside-panel { background: #0f172a; color: white; padding: 20px; border-radius: 12px; height: fit-content; margin-bottom: 20px; }
@@ -17,6 +17,7 @@
         .box-green { background: #ecfdf5; border-color: #a7f3d0; }
         .box-amber { background: #fff7ed; border-color: #ffedd5; }
         .box-purple { background: #faf5ff; border-color: #e9d5ff; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 6px; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
         .grid-receta { display: grid; grid-template-columns: 80px 1fr 1fr 1fr; gap: 6px; align-items: center; margin-top: 4px; }
@@ -62,7 +63,7 @@
                     <div class="grid-3">
                         <div><label>Marca Armazón</label><input type="text" id="marco_marca" placeholder="Ej. Vulk"></div>
                         <div><label>Modelo / Código</label><input type="text" id="marco_modelo" placeholder="Ej. Detroit"></div>
-                        <div><label>Precio Armazón (\$)</label><input type="number" id="p_marco" value="0" min="0" oninput="calcularTotales()"></div>
+                        <div><label>Precio Armazón (\$)</label><input type="number" id="p_marco" value="0" min="0"></div>
                     </div>
                     <div class="grid-3" style="margin-top: 8px;">
                         <div>
@@ -75,7 +76,7 @@
                             </select>
                         </div>
                         <div><label>Tratamiento / Material</label><input type="text" id="cristal_trat" placeholder="Ej. Antirreflex / Filtro Azul"></div>
-                        <div><label>Precio Cristales (\$)</label><input type="number" id="p_cristal" value="0" min="0" oninput="calcularTotales()"></div>
+                        <div><label>Precio Cristales (\$)</label><input type="number" id="p_cristal" value="0" min="0"></div>
                     </div>
                 </div>
 
@@ -106,7 +107,7 @@
                     <div class="grid-3">
                         <div><label>Tipo de Lente</label><input type="text" id="lc_tipo" placeholder="Ej. Descartable / Anual"></div>
                         <div><label>Marca / Laboratorio</label><input type="text" id="lc_marca" placeholder="Ej. Acuvue / B&L"></div>
-                        <div><label>Precio Lentes (\$)</label><input type="number" id="p_lc" value="0" min="0" oninput="calcularTotales()"></div>
+                        <div><label>Precio Lentes (\$)</label><input type="number" id="p_lc" value="0" min="0"></div>
                     </div>
                     <div class="grid-2" style="margin-top:8px;">
                         <div><label>Graduación O.D.</label><input type="text" id="lc_grad_od" placeholder="Ej. -3.00"></div>
@@ -130,8 +131,8 @@
                     <h3>💰 6. Liquidación y Caja</h3>
                     <div class="grid-4">
                         <div><label>Total Adicionales (\$)</label><input type="number" id="tot_acc_input" value="0" readonly style="background:#f1f5f9;"></div>
-                        <div><label>Descuento (%)</label><input type="number" id="porcentaje_desc" value="0" min="0" max="100" oninput="calcularTotales()"></div>
-                        <div><label>Seña Recibida (\$)</label><input type="number" id="monto_sena" value="0" oninput="calcularTotales()"></div>
+                        <div><label>Descuento (%)</label><input type="number" id="porcentaje_desc" value="0" min="0" max="100"></div>
+                        <div><label>Seña Recibida (\$)</label><input type="number" id="monto_sena" value="0"></div>
                         <div>
                             <label>Forma de Pago</label>
                             <select id="metodo_pago">
@@ -155,7 +156,7 @@
                     </div>
                 </div>
                 <button type="submit">🚀 Finalizar e Imprimir Ticket Directo</button>
-            </form>
+            </select>
 
             <!-- 7. CONTROL DE INVENTARIO MANUAL -->
             <div class="box box-amber" style="margin-top:30px; background:#fffbeb;">
@@ -227,10 +228,10 @@
     </div>
 
     <script>
-        let adicionalesVenta =;
+        let adicionalesVenta = [];
         let historialClientes = [
             {
-                fecha: "09/10/2026", vendedor: "Ana", cliente: "Carlos Gomez", telefono: "1144445555",
+                fecha: "10/10/2026", vendedor: "Ana", cliente: "Carlos Gomez", telefono: "1144445555",
                 marco: "Vulk Detroit", cristales: "Multifocal - Filtro Azul",
                 od_l: "Esf: -1.50 Cil: -0.50 Eje: 90°", oi_l: "Esf: -1.25 Cil: 0.00 Eje: 0°",
                 od_c: "Esf: +0.50 Cil: -0.50 Eje: 90°", oi_c: "Esf: +0.75 Cil: 0.00 Eje: 0°",
@@ -238,9 +239,12 @@
             }
         ];
         let inventarioLocal = [
-            {id: 1, marca: "Ray-Ban", modelo: "Aviator", color: "Negro", stock: 6, precio: 45000},
-            {id: 2, marca: "Vulk", modelo: "Detroit", color: "Carey", stock: 4, precio: 38000},
-            {id: 3, marca: "Infinit", modelo: "Way", color: "Transparente", stock: 5, precio: 29000}
+            {marca: "Ray-Ban", modelo: "Aviator", color: "Negro", stock: 6, precio: 45000},
+            {marca: "Vulk", modelo: "Detroit", color: "Carey", stock: 4, precio: 38000},
+            {marca: "Infinit", modelo: "Way", color: "Transparente", stock: 5, precio: 29000}
         ];
 
         function cargarProductos() {
+            const lista = document.getElementById('listaStock');
+            lista.innerHTML = "";
+            inventarioLocal.forEach(m => {
