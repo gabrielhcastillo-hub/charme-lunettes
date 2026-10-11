@@ -6,7 +6,7 @@
     <title>CHARME LUNETTES - Sistema Central</title>
     <style>
         body { font-family: sans-serif; background-color: #f1f5f9; padding: 20px; color: #334155; }
-        .container { max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; }
+        .container { max-width: 1250px; margin: 0 auto; display: grid; grid-template-columns: 2.2fr 1fr; gap: 20px; }
         @media(max-width: 1024px) { .container { grid-template-columns: 1fr; } }
         .main-panel { background: white; padding: 25px; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .aside-panel { background: #0f172a; color: white; padding: 20px; border-radius: 12px; height: fit-content; margin-bottom: 20px; }
@@ -25,10 +25,10 @@
         label { font-size: 10px; font-weight: bold; color: #64748b; display: block; margin-bottom: 2px; text-transform: uppercase; }
         button { width: 100%; background: #0f172a; color: white; border: none; padding: 14px; font-size: 15px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 10px; }
         button:hover { background: #1e293b; }
-        .btn-add { background: #ea580c; color: white; padding: 8px; font-size: 13px; margin-top: 0; height: 36px; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-add { background: #ea580c; padding: 8px; font-size: 13px; margin-top: 0; height: 36px; }
         .stock-item { display: flex; justify-content: space-between; border-bottom: 1px solid #334155; padding: 6px 0; font-size: 12px; }
         .item-row { display: flex; justify-content: space-between; background: white; padding: 6px; border-radius: 6px; border: 1px solid #e2e8f0; margin-top: 4px; font-size: 12px; }
-        .history-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 12px; }
+        .history-card { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-top: 10px; font-size: 12px; line-height: 1.6; border-left: 4px solid #10b981; }
         .receta-header { font-size: 11px; font-weight: bold; color: #1e40af; background: #dbeafe; padding: 4px 8px; border-radius: 4px; margin-top: 12px; text-transform: uppercase; }
         .lbl-txt { font-size: 12px; font-weight: bold; color: #334155; text-align: center; }
         .hidden { display: none !important; }
@@ -45,15 +45,14 @@
         <div class="main-panel">
             <h1>👓 CHARME LUNETTES</h1>
             <form id="formVenta">
-                
-                <!-- 1. Datos Operación -->
+                <!-- 1. Datos Operación y Cliente -->
                 <div class="box">
                     <h3>1. Datos de la Operación</h3>
                     <div class="grid-4">
                         <div><label>Fecha del Trabajo</label><input type="date" id="fecha_trabajo" required></div>
                         <div><label>Vendedor</label><input type="text" id="vendedor" required placeholder="Ej. Ana"></div>
-                        <div><label>Nombre del Cliente</label><input type="text" id="cliente" required placeholder="Ej. Juan Pérez"></div>
-                        <div><label>Teléfono / Celular</label><input type="tel" id="telefono" placeholder="Ej. 11 2345-6789"></div>
+                        <div><label>Nombre del Cliente</label><input type="text" id="cliente" required placeholder="Ej. Gabriel Castillo"></div>
+                        <div><label>Teléfono / Celular</label><input type="tel" id="telefono" placeholder="Ej. 11 3951-3910"></div>
                     </div>
                 </div>
 
@@ -75,12 +74,12 @@
                                 <option value="Solo Armazón">🕶️ Solo Sol / Armazón</option>
                             </select>
                         </div>
-                        <div><label>Tratamiento / Material</label><input type="text" id="cristal_trat" placeholder="Ej. Blue Light / Antirreflex"></div>
+                        <div><label>Tratamiento / Material</label><input type="text" id="cristal_trat" placeholder="Ej. Antirreflex / Filtro Azul"></div>
                         <div><label>Precio Cristales (\$)</label><input type="number" id="p_cristal" value="0" min="0"></div>
                     </div>
                 </div>
 
-                <!-- 3. Receta Médica -->
+                <!-- 3. Receta Oftalmológica Completa -->
                 <div class="box box-blue">
                     <h3>3. Receta Oftalmológica (Lejos por separado de Cerca)</h3>
                     <div class="receta-header">👓 GRADUACIÓN DE LEJOS</div>
@@ -93,7 +92,7 @@
                     <div class="grid-receta"><div class="lbl-txt">O.D.</div><input type="number" step="0.25" id="od_c_esf" placeholder="0.00"><input type="number" step="0.25" id="od_c_cil" placeholder="0.00"><input type="number" id="od_c_eje" placeholder="0°"></div>
                     <div class="grid-receta"><div class="lbl-txt">O.I.</div><input type="number" step="0.25" id="oi_c_esf" placeholder="0.00"><input type="number" step="0.25" id="oi_c_cil" placeholder="0.00"><input type="number" id="oi_c_eje" placeholder="0°"></div>
 
-                    <div class="receta-header" style="background:#fee2e2; color:#991b1b;"> Medidas Únicas Centrales</div>
+                    <div class="receta-header" style="background:#fee2e2; color:#991b1b;">📏 MEDIDAS ÚNICAS CENTRALES</div>
                     <div class="grid-3" style="margin-top: 6px;">
                         <div><label>Adición (Add)</label><input type="number" step="0.25" id="receta_adi" placeholder="0.00"></div>
                         <div><label>Distancia Pupilar (D.P.)</label><input type="number" step="0.5" id="receta_dp" placeholder="mm"></div>
@@ -106,7 +105,7 @@
                     <h3>👁️ 4. Contactología / Lentes de Contacto</h3>
                     <div class="grid-3">
                         <div><label>Tipo de Lente</label><input type="text" id="lc_tipo" placeholder="Ej. Descartable / Anual"></div>
-                        <div><label>Marca / Laboratorio</label><input type="text" id="lc_marca" placeholder="Ej. Acuvue"></div>
+                        <div><label>Marca / Laboratorio</label><input type="text" id="lc_marca" placeholder="Ej. Acuvue / B&L"></div>
                         <div><label>Precio Lentes (\$)</label><input type="number" id="p_lc" value="0" min="0"></div>
                     </div>
                     <div class="grid-2" style="margin-top:8px;">
@@ -119,4 +118,4 @@
                 <div class="box box-amber">
                     <h3>🛍️ 5. Artículos Varios y Reparaciones (Carga Libre)</h3>
                     <div class="grid-3" style="align-items: end;">
-                        <div><label>Descripción Artículo / Reparación</label><input type="text" id="acc_nombre" placeholder="Ej. Estuche rígido / Soldadura"></div>
+                        <div><label>Descripción Artículo</label><input type="text" id="acc_nombre" placeholder="Ej. Estuche / Líquido"></div>
